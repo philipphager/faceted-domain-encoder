@@ -23,7 +23,7 @@ def pearson_correlation(similarity, score):
     return correlation
 
 
-def plot_scatter(frame, correlation, name='scatter.pdf'):
+def plot_scatter(frame, correlation, name='scatter.vg.json'):
     chart = alt.Chart(
         frame,
         title=f'MedSTS - Test Dataset {round(correlation, 4)}r',
