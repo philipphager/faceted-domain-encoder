@@ -1,0 +1,10 @@
+data:
+  name: biosses
+  train_path: 'data/benchmark/biosses_train.txt'
+  test_path: 'data/benchmark/biosses_test.txt'
+  should_stop: True
+  should_sample: False
+  max_length: 40
+  split: 0.1
+  shuffle_before_split: False
+  random_state: 42

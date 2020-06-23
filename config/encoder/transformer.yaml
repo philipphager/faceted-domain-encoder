@@ -1,0 +1,8 @@
+model:
+  encoder: transformer
+
+training:
+  batch_size: 32
+
+validation:
+  batch_size: 32

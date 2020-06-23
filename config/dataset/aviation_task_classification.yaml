@@ -1,0 +1,12 @@
+data:
+  name: ohsumed_classification
+  base_path: 'data/ohsumed.txt'
+  train_path: 'data/classification/aviation/task/train.txt'
+  test_path: 'data/classification/aviation/task/test.txt'
+  should_stop: False
+  should_sample: False
+  samples: 0
+  max_length: 134
+  split: 0.3
+  shuffle_before_split: True
+  random_state: 42

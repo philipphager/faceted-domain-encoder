@@ -1,0 +1,23 @@
+graph:
+    name: mesh
+    path: 'data/graph.json'
+    embedding: 'data/node2vec/graph.json'
+    category_embedding: 'data/node2vec/'
+    num_categories: 16
+    categories:
+        - 'Anatomy [A]'
+        - 'Organisms [B]'
+        - 'Diseases [C]'
+        - 'Chemicals and Drugs [D]'
+        - 'Analytical, Diagnostic and Therapeutic Techniques and Equipment [E]'
+        - 'Psychiatry and Psychology [F]'
+        - 'Biological Sciences [G]'
+        - 'Physical Sciences [H]'
+        - 'Anthropology, Education, Sociology and Social Phenomena [I]'
+        - 'Technology and Food and Beverages [J]'
+        - 'Humanities [K]'
+        - 'Information Science [L]'
+        - 'Persons [M]'
+        - 'Health Care [N]'
+        - 'Publication Characteristics [V]'
+        - 'Geographic Locations [Z]'

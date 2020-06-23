@@ -1,0 +1,2 @@
+word:
+  embedding: 'data/vector/cc.en.300.bin'

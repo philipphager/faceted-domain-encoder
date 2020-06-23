@@ -1,0 +1,20 @@
+data:
+  name: ohsumed
+  train_path: 'data/ohsumed.txt'
+  test_path: False
+  should_stop: True
+  should_sample: True
+  samples: 1000
+  max_length: 128
+  split: 0.3
+  shuffle_before_split: True
+  random_state: 42
+
+### Dataset Stats ###
+# After tokenization and stopping without entity linking:
+# Max Tokens: 399
+# 99th Percentile: 246
+
+# After tokenization and stopping with entity linking:
+# Max Tokens: 399
+# 99th Percentile: 246

@@ -1,0 +1,8 @@
+model:
+  pooling: max
+
+training:
+  batch_size: 32
+
+validation:
+  batch_size: 32
