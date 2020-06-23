@@ -95,7 +95,6 @@ class FacetedDomainEncoder(LightningModule):
                     encoder=hparams.model.encoder,
                     pooling=hparams.model.pooling,
                     normalizer=hparams.model.normalizer)
-        self.min_validation_loss = 10000.0
 
     def forward(self,
                 doc1, doc1_categories, doc1_lengths,
@@ -112,11 +111,11 @@ class FacetedDomainEncoder(LightningModule):
         x = self.encoder(x, lengths)
 
         if self.pooling_strategy == PoolingStrategy.CATEGORY_ATTENTION:
-            x, attention_weights = self.pooling(x, x_graph, categories, lengths)
+            x, attention_weights = self.pooling(x, x_graph, lengths)
             x = self.normalizer(x, documents, categories)
             return (x, attention_weights) if attention else x
 
-        x = self.pooling(x, categories, lengths)
+        x = self.pooling(x, lengths)
         x = self.normalizer(x, documents, categories)
         return x
 
@@ -218,10 +217,6 @@ class FacetedDomainEncoder(LightningModule):
     def configure_optimizers(self):
         return RAdam(self.parameters(), lr=self.hparams.training.learning_rate)
 
-    def on_train_start(self):
-        log = {'epoch/val/loss/best': self.min_validation_loss}
-        self.logger.log_hyperparams_metrics(self.hparams, log)
-
     def training_step(self, batch, step):
         x1, x1_category, x1_length, x2, x2_category, x2_length, y = batch
         y_predict = self.forward(x1, x1_category, x1_length, x2, x2_category, x2_length)
@@ -243,15 +238,7 @@ class FacetedDomainEncoder(LightningModule):
 
     def validation_epoch_end(self, steps):
         mean_loss = torch.stack([step['loss'] for step in steps]).mean().item()
-
-        if mean_loss < self.min_validation_loss:
-            self.min_validation_loss = mean_loss
-
-        log = {
-            'epoch/val/loss/best': self.min_validation_loss,
-            'epoch/val/loss': mean_loss
-        }
-        return {'val_loss': mean_loss, 'log': log}
+        return {'val_loss': mean_loss}
 
     def on_train_end(self):
         logger.info('Training end: Embed full dataset')
@@ -278,7 +265,6 @@ class FacetedDomainEncoder(LightningModule):
             frame,
             domain2vec,
             graph2vec,
-            category_dims=self.hparams.graph.num_categories,
             sampling_strategy=sampling_strategy,
             samples_per_document=samples_per_document,
             graph_k=graph_k,
