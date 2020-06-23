@@ -1,5 +1,3 @@
-import os
-
 import hydra
 import pandas as pd
 from loguru import logger
@@ -69,8 +67,7 @@ def experiment(config: DictConfig):
     train_correlation = pearson_correlation(train_df.similarity, train_df.score)
     test_correlation = pearson_correlation(test_df.similarity, test_df.score)
 
-    plot = plot_scatter(test_df, test_correlation)
-    plot.save('medsts_scatter.pdf')
+    plot_scatter(test_df, test_correlation)
 
     logger.info('Encoder {}', config.model.encoder)
     logger.info('Pooling {}', config.model.pooling)

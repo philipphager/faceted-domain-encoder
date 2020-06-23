@@ -1,6 +1,7 @@
 import altair as alt
 import numpy as np
 import pandas as pd
+from altair_saver import save
 from scipy import stats
 from torch import nn
 
@@ -22,8 +23,8 @@ def pearson_correlation(similarity, score):
     return correlation
 
 
-def plot_scatter(frame, correlation):
-    return alt.Chart(
+def plot_scatter(frame, correlation, name='scatter.pdf'):
+    chart = alt.Chart(
         frame,
         title=f'MedSTS - Test Dataset {round(correlation, 4)}r',
         width=480,
@@ -33,3 +34,5 @@ def plot_scatter(frame, correlation):
         y=alt.Y('similarity', title='FDE Cosine Similarity'),
         tooltip=['pair_id', 'similarity', 'score']
     )
+    save(chart, name)
+    return chart
