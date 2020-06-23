@@ -1,2 +1,2 @@
 word:
-  embedding: 'data/vector/cc.en.300.bin'
+  embedding: 'data/embedding/cc.en.300.bin'

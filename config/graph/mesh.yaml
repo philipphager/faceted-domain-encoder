@@ -1,8 +1,7 @@
 graph:
     name: mesh
-    path: 'data/graph.json'
-    embedding: 'data/node2vec/graph.json'
-    category_embedding: 'data/node2vec/'
+    path: 'data/graph/mesh/graph.json'
+    embedding: 'data/graph/mesh/embedding.json'
     num_categories: 16
     categories:
         - 'Anatomy [A]'

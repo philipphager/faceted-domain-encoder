@@ -1,7 +1,7 @@
 data:
   name: medsts
-  train_path: 'data/benchmark/medsts_train.txt'
-  test_path: 'data/benchmark/medsts_test.txt'
+  train_path: 'data/experiment/sentence_similarity/medsts/train.txt'
+  test_path: 'data/experiment/sentence_similarity/medsts/test.txt'
   should_stop: True
   should_sample: False
   max_length: 82
