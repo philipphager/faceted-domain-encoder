@@ -33,7 +33,7 @@ class MeSHFactory(KnowledgeGraphFactory):
         self.max_synonyms = 5
 
     def _create(self):
-        tree2concept, term2concept, concept2name, concept2category, concept2synonym = self._parse_xml(self.xml_path)
+        tree2concept, term2concept, concept2name, concept2category = self._parse_xml(self.xml_path)
         graph = self._create_graph(tree2concept, concept2name, concept2category)
         return KnowledgeGraph(graph, term2concept, concept2name)
 

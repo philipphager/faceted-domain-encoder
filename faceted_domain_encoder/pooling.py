@@ -9,12 +9,12 @@ class MeanPooling(nn.Module):
         super().__init__()
         self.document_embedding_dims = document_embedding_dims
 
-    def forward(self, documents, document_lengths):
-        batch_dims = documents.size(0)
+    def forward(self, x, lengths):
+        batch_dims = x.size(0)
 
-        assert documents.dim() == 3
+        assert x.dim() == 3
         # Mean all word embeddings into document embedding
-        x = torch.sum(documents, dim=1) / document_lengths.reshape(-1, 1)
+        x = torch.sum(x, dim=1) / lengths.reshape(-1, 1)
         assert x.size(0) == batch_dims
         assert x.size(1) == self.document_embedding_dims
         assert x.dim() == 2
@@ -26,12 +26,12 @@ class MaxPooling(nn.Module):
         super().__init__()
         self.document_embedding_dims = document_embedding_dims
 
-    def forward(self, documents, document_lengths):
-        batch_dims = documents.size(0)
+    def forward(self, x, length):
+        batch_dims = x.size(0)
 
-        assert documents.dim() == 3
+        assert x.dim() == 3
         # Max all word embeddings into document embedding
-        x, _ = torch.max(documents, dim=1)
+        x, _ = torch.max(x, dim=1)
         assert x.size(0) == batch_dims
         assert x.size(1) == self.document_embedding_dims
         assert x.dim() == 2
@@ -57,14 +57,14 @@ class CategoryAttentionPooling(nn.Module):
             num_categories,
             dropout)
 
-    def forward(self, x, x_graph, categories, lengths):
+    def forward(self, x, x_graph, lengths):
         batch_dims = x.size(0)
         sequence_dims = x.size(1)
 
         assert x.size(2) == self.document_embedding_dims
         assert x_graph.size(2) == self.graph_embedding_dims
 
-        x, attention = self.category_attention(x, x_graph, categories, lengths)
+        x, attention = self.category_attention(x, x_graph, lengths)
 
         assert x.size(0) == batch_dims
         assert x.size(1) == sequence_dims
