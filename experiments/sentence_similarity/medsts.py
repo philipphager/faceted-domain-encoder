@@ -52,8 +52,6 @@ def train_model(config):
 
 @hydra.main('../../config', 'medsts_config.yaml')
 def experiment(config: DictConfig):
-    print(os.getcwd())
-
     train_in_path = hydra.utils.to_absolute_path(config.data.raw_train_path)
     test_in_path = hydra.utils.to_absolute_path(config.data.raw_test_path)
     test_score_path = hydra.utils.to_absolute_path(config.data.raw_test_score_path)
@@ -82,5 +80,4 @@ def experiment(config: DictConfig):
 
 
 if __name__ == '__main__':
-    print(os.getcwd())
     experiment()
