@@ -6,6 +6,22 @@ authors = ["Philipp Hager <philipp.hager@student.hpi.uni-potsdam.de>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
+torch = "^1.5.1"
+torchvision = "^0.6.1"
+loguru = "^0.5.1"
+pandas = "^1.0.5"
+spacy = "^2.3.0"
+fasttext = "^0.9.2"
+gensim = "^3.8.3"
+pytorch_lightning = "^0.8.1"
+sklearn = "^0.0"
+swifter = "^0.305"
+networkx = "^2.4"
+omegaconf = {version = "^2.0", allow-prereleases = true}
+matplotlib = "^3.2.2"
+seaborn = "^0.10.1"
+altair = "^4.1.0"
+hydra-core = {version = "^1.0.0-rc.1", allow-prereleases = true}
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
