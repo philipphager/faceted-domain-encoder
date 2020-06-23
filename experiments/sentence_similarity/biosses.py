@@ -69,7 +69,6 @@ def experiment(config: DictConfig):
     logger.info('Normalizer {}', config.model.normalizer)
     logger.info('Train correlation {}', result_df.train.mean())
     logger.info('Test correlation {}', result_df.test.mean())
-    logger.info('Normalizer {}', config.model.normalizer)
 
 
 if __name__ == '__main__':
