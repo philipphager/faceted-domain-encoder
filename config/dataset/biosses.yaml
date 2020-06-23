@@ -1,7 +1,8 @@
 data:
   name: biosses
-  train_path: 'data/benchmark/biosses_train.txt'
-  test_path: 'data/benchmark/biosses_test.txt'
+  raw_path: 'data/experiment/sentence_similarity/biosses/biosses.csv'
+  train_path: 'data/experiment/sentence_similarity/biosses/train.txt'
+  test_path: 'data/experiment/sentence_similarity/biosses/test.txt'
   should_stop: True
   should_sample: False
   max_length: 40
