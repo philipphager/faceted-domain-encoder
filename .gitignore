@@ -1,0 +1,22 @@
+## Pycharm
+.idea
+
+## Python
+*.pyc
+
+## Lighning
+events*
+*.ckpt
+
+## Jupyter
+.ipynb_checkpoints
+
+## Data and models
+data/
+*.csv
+*.zip
+*.bin
+*.txt
+
+## OSX
+.DS_Store
