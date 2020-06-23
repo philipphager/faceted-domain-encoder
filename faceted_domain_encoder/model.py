@@ -241,18 +241,21 @@ class FacetedDomainEncoder(LightningModule):
         return {'val_loss': mean_loss}
 
     def on_train_end(self):
-        logger.info('Training end: Embed full dataset')
-        index = torch.stack(self.df.document_index.to_list())
-        category = torch.stack(self.df.document_category.to_list())
-        length = torch.tensor(self.df.document_length.to_list(), dtype=torch.int)
+        logger.info('Training end')
 
-        domain2vec = CategoryDomain2Vec(self, self.category_distance)
-        embeddings = domain2vec.embed(index, category, length)
+        if self.hparams.trainer.export_embeddings:
+            logger.info('Training end: Embed full dataset')
+            index = torch.stack(self.df.document_index.to_list())
+            category = torch.stack(self.df.document_category.to_list())
+            length = torch.tensor(self.df.document_length.to_list(), dtype=torch.int)
 
-        self.logger.experiment.add_embedding(embeddings)
-        self.df.to_pickle('documents.pkl')
-        torch.save(embeddings, 'embeddings.pt')
-        logger.info('Training end: Embed full dataset finished')
+            domain2vec = CategoryDomain2Vec(self, self.category_distance)
+            embeddings = domain2vec.embed(index, category, length)
+
+            self.logger.experiment.add_embedding(embeddings)
+            self.df.to_pickle('documents.pkl')
+            torch.save(embeddings, 'embeddings.pt')
+            logger.info('Training end: Embed full dataset finished')
 
     def _get_dataset(self, frame, sampling_strategy, samples_per_document, graph_k, embedding_k):
         domain2vec = CategoryDomain2Vec(self, self.category_distance)
