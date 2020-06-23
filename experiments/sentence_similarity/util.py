@@ -1,6 +1,6 @@
-import pandas as pd
+import altair as alt
 import numpy as np
-
+import pandas as pd
 from scipy import stats
 from torch import nn
 
@@ -20,3 +20,16 @@ def sentence_similarity(model, frame):
 def pearson_correlation(similarity, score):
     correlation, p = stats.pearsonr(similarity, score)
     return correlation
+
+
+def plot_scatter(frame, correlation):
+    return alt.Chart(
+        frame,
+        title=f'MedSTS - Test Dataset {round(correlation, 4)}r',
+        width=480,
+        height=480
+    ).mark_circle(opacity=0.5).encode(
+        x=alt.X('score', title='MedSTS Annotator Score'),
+        y=alt.Y('similarity', title='FDE Cosine Similarity'),
+        tooltip=['pair_id', 'similarity', 'score']
+    )

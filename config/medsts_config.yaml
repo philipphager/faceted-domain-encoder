@@ -1,5 +1,5 @@
 defaults:
-  - dataset: ohsumed
+  - dataset: medsts
   - encoder: gru
   - normalizer: document
   - pooling: category_attention

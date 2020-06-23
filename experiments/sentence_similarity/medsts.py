@@ -1,10 +1,13 @@
+import os
+
+import hydra
 import pandas as pd
-from hydra import experimental
 from loguru import logger
+from omegaconf import DictConfig
 from pytorch_lightning import Trainer
 from pytorch_lightning import callbacks
 
-from experiments.sentence_similarity.util import to_file, sentence_similarity, pearson_correlation
+from experiments.sentence_similarity.util import to_file, sentence_similarity, pearson_correlation, plot_scatter
 from experiments.util.env import use_gpu
 from faceted_domain_encoder import FacetedDomainEncoder
 
@@ -31,6 +34,7 @@ def prepare_test(in_path, score_path, out_path):
     to_file(frame, out_path)
     return frame
 
+
 def train_model(config):
     use_gpu(3)
 
@@ -46,19 +50,15 @@ def train_model(config):
     return model
 
 
-def experiment():
-    # experimental.initialize(config_path='../config')
-    config = experimental.compose('medicine_config.yaml', overrides=[
-        'dataset=medsts',
-        'normalizer=corpus'
-    ])
-    print(config.pretty())
+@hydra.main('../../config', 'medsts_config.yaml')
+def experiment(config: DictConfig):
+    print(os.getcwd())
 
-    train_in_path = 'data/experiment/sentence_similarity/medsts/clinicalSTS.train.txt'
-    test_in_path = 'data/experiment/sentence_similarity/medsts/clinicalSTS.test.txt'
-    test_score_path = 'data/experiment/sentence_similarity/medsts/clinicalSTS.test.gs.sim.txt'
-    train_out_path = config.data.train_path
-    test_out_path = config.data.test_path
+    train_in_path = hydra.utils.to_absolute_path(config.data.raw_train_path)
+    test_in_path = hydra.utils.to_absolute_path(config.data.raw_test_path)
+    test_score_path = hydra.utils.to_absolute_path(config.data.raw_test_score_path)
+    train_out_path = hydra.utils.to_absolute_path(config.data.train_path)
+    test_out_path = hydra.utils.to_absolute_path(config.data.test_path)
 
     train_df = prepare_train(train_in_path, train_out_path)
     test_df = prepare_test(test_in_path, test_score_path, test_out_path)
@@ -71,10 +71,16 @@ def experiment():
     train_correlation = pearson_correlation(train_df.similarity, train_df.score)
     test_correlation = pearson_correlation(test_df.similarity, test_df.score)
 
+    plot = plot_scatter(test_df, test_correlation)
+    plot.save('medsts_scatter.pdf')
+
+    logger.info('Encoder {}', config.model.encoder)
+    logger.info('Pooling {}', config.model.pooling)
+    logger.info('Normalizer {}', config.model.normalizer)
     logger.info('Train correlation {}', train_correlation)
     logger.info('Test correlation {}', test_correlation)
-    return train_correlation, test_correlation
 
 
 if __name__ == '__main__':
+    print(os.getcwd())
     experiment()

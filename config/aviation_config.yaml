@@ -37,5 +37,3 @@ validation:
 trainer:
   gpus: 1
   max_epochs: 20
-  patience: 2
-  checkpoint_to_k: 1

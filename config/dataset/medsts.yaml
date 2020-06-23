@@ -1,5 +1,8 @@
 data:
   name: medsts
+  raw_train_path: 'data/experiment/sentence_similarity/medsts/clinicalSTS.train.txt'
+  raw_test_path: 'data/experiment/sentence_similarity/medsts/clinicalSTS.test.txt'
+  raw_test_score_path: 'data/experiment/sentence_similarity/medsts/clinicalSTS.test.gs.sim.txt'
   train_path: 'data/experiment/sentence_similarity/medsts/train.txt'
   test_path: 'data/experiment/sentence_similarity/medsts/test.txt'
   should_stop: True
