@@ -32,7 +32,7 @@ def prepare_datasets(config):
 
 
 def train_model(config):
-    use_gpu(3)
+    use_gpu(2)
 
     trainer = Trainer(
         gpus=config.trainer.gpus,
