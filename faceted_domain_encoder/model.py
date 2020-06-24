@@ -22,7 +22,7 @@ from .graph.mesh import MeSHFactory
 from .graph2vec import CategoryGraph2Vec
 from .normalization import DocumentTfidfNormalizer, CorpusTfidfNormalizer, PassThroughNormalizer
 from .optimizer import RAdam
-from .pooling import MeanPooling, MaxPooling, CategoryAttentionPooling
+from .pooling import MeanPooling, MaxPooling, CategoryAttentionPooling, SelfAttentionPooling
 from .util.linalg import CategoryDistance
 from .util.plotting import plot_text, plot_attention, plot_category_weight
 from .util.preprocessing import load_data_file, TextProcessor, load_embeddings
@@ -38,6 +38,7 @@ class NormalizationStrategy(Enum):
 
 class PoolingStrategy(Enum):
     CATEGORY_ATTENTION = 'category_attention'
+    SELF_ATTENTION = 'self_attention'
     MAX = 'max'
     MEAN = 'mean'
 
@@ -111,6 +112,10 @@ class FacetedDomainEncoder(LightningModule):
 
         if self.pooling_strategy == PoolingStrategy.CATEGORY_ATTENTION:
             x, attention_weights = self.pooling(x, x_graph, lengths)
+            x = self.normalizer(x, documents, categories)
+            return (x, attention_weights) if attention else x
+        elif self.pooling_strategy == PoolingStrategy.SELF_ATTENTION:
+            x, attention_weights = self.pooling(x, lengths)
             x = self.normalizer(x, documents, categories)
             return (x, attention_weights) if attention else x
 
@@ -320,6 +325,11 @@ class FacetedDomainEncoder(LightningModule):
             pooling = CategoryAttentionPooling(
                 self.hparams.model.document_embedding_dims,
                 self.hparams.model.graph_embedding_dims,
+                self.hparams.graph.num_categories,
+                self.hparams.model.dropout)
+        elif strategy == PoolingStrategy.SELF_ATTENTION:
+            pooling = SelfAttentionPooling(
+                self.hparams.model.document_embedding_dims,
                 self.hparams.graph.num_categories,
                 self.hparams.model.dropout)
         else:
