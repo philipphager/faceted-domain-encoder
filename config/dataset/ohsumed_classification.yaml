@@ -7,7 +7,7 @@ data:
   should_stop: True
   should_sample: False
   samples: 0
-  max_length: 286
+  max_length: 400
   split: 0.3
   shuffle_before_split: True
   random_state: 42
