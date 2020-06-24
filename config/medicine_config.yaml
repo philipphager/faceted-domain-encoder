@@ -1,7 +1,7 @@
 defaults:
   - dataset: ohsumed
   - encoder: gru
-  - normalizer: document
+  - normalizer: corpus
   - pooling: category_attention
   - word: fasttext
   - graph: mesh

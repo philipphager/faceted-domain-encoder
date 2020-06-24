@@ -1,7 +1,7 @@
 defaults:
   - dataset: aviation_task_classification
-  - encoder: transformer
-  - normalizer: document
+  - encoder: gru
+  - normalizer: corpus
   - pooling: category_attention
   - word: fasttext
   - graph: aviation
