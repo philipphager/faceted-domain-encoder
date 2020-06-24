@@ -93,7 +93,7 @@ class FacetedDomainEncoder(LightningModule):
         # Define empty embedding layers, embeddings are created after pre-processing
         self.word_embedding = nn.Embedding(len(self.processor.vocabulary), self.hparams.model.word_embedding_dims)
         self.graph_embedding = nn.Embedding(len(self.processor.vocabulary), self.hparams.model.graph_embedding_dims)
-        logger.info('Created model: {}, {}, {}', hparams.model.encoder, hparams.model.pooling, hparams.model.normalizer)
+        logger.info('Created model: %s, %s, %s', hparams.model.encoder, hparams.model.pooling, hparams.model.normalizer)
 
     def forward(self,
                 doc1, doc1_categories, doc1_lengths,
