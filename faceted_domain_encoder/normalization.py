@@ -1,9 +1,11 @@
+import logging
+
 import torch
 import torch.nn.functional as F
 
-from loguru import logger
 from torch import nn
 
+logger = logging.getLogger(__name__)
 
 class PassThroughNormalizer:
     def __init__(self):
@@ -42,7 +44,7 @@ class CorpusTfidfNormalizer:
                 category_percentage[category] += self.vocabulary.index2idf(index)
 
         category_percentage = category_percentage / category_percentage.sum()
-        logger.info('CorpusTfidfNormalization: {}', category_percentage)
+        logger.info('CorpusTfidfNormalization: %s', category_percentage)
         return category_percentage
 
     def _split_categories(self, x):

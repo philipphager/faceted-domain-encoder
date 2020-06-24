@@ -1,13 +1,16 @@
+import logging
+
 import hydra
 import pandas as pd
-from loguru import logger
 from omegaconf import DictConfig
 from pytorch_lightning import Trainer
 from pytorch_lightning import callbacks
 
-from experiments.sentence_similarity.util import to_file, sentence_similarity, pearson_correlation, plot_scatter
+from experiments.sentence_similarity.util import to_file, sentence_similarity, pearson_correlation
 from experiments.util.env import use_gpu
 from faceted_domain_encoder import FacetedDomainEncoder
+
+logger = logging.getLogger(__name__)
 
 """"
 MedSTS Benchmark
@@ -67,11 +70,11 @@ def experiment(config: DictConfig):
     train_correlation = pearson_correlation(train_df.similarity, train_df.score)
     test_correlation = pearson_correlation(test_df.similarity, test_df.score)
 
-    logger.info('Encoder {}', config.model.encoder)
-    logger.info('Pooling {}', config.model.pooling)
-    logger.info('Normalizer {}', config.model.normalizer)
-    logger.info('Train correlation {}', train_correlation)
-    logger.info('Test correlation {}', test_correlation)
+    logger.info('Encoder %s', config.model.encoder)
+    logger.info('Pooling %s', config.model.pooling)
+    logger.info('Normalizer %s', config.model.normalizer)
+    logger.info('Train correlation %s', train_correlation)
+    logger.info('Test correlation %s', test_correlation)
 
 
 if __name__ == '__main__':

@@ -1,21 +1,23 @@
 import json
+import logging
 import re
 
 import numpy as np
 import pandas as pd
 import spacy
 import torch
-from loguru import logger
 from spacy.lang.char_classes import ALPHA, ALPHA_LOWER, ALPHA_UPPER
 from spacy.lang.char_classes import CONCAT_QUOTES, LIST_ELLIPSES, LIST_ICONS
 from spacy.util import compile_infix_regex
 
 from faceted_domain_encoder.graph.graph import KnowledgeGraph
 
+logger = logging.getLogger(__name__)
+
 
 def load_data_file(path):
     # Expect file with one document per line
-    logger.info('Load text file: {path}', path=path)
+    logger.info('Load text file: %s', path)
     df = pd.read_csv(path, sep='\r\n', header=None)
     df.columns = ['text']
     return df
@@ -276,9 +278,9 @@ class TextProcessor:
         return indices, categories, length
 
     def save(self, path: str):
-        logger.info('Save vocabulary to: {}', path)
+        logger.info('Save vocabulary to: %s', path)
         self.vocabulary.save(path)
 
     def load(self, path: str):
-        logger.info('Load vocabulary to: {}', path)
+        logger.info('Load vocabulary to: %s', path)
         self.vocabulary.load(path)

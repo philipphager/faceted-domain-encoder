@@ -1,8 +1,8 @@
+import logging
 import os
 
 import hydra
 import pandas as pd
-from loguru import logger
 from omegaconf import DictConfig
 from pytorch_lightning import Trainer
 from pytorch_lightning import callbacks
@@ -12,11 +12,14 @@ from experiments.sentence_similarity.util import to_file, sentence_similarity, p
 from experiments.util.env import use_gpu
 from faceted_domain_encoder import FacetedDomainEncoder
 
+logger = logging.getLogger(__name__)
+
 """"
 BIOSSES Benchmark
 Authors: Gizem Soğancıoğlu, Hakime Öztürk, Arzucan Özgür
 Paper: https://academic.oup.com/bioinformatics/article/33/14/i49/3953954
 """
+
 
 def train_model(config):
     use_gpu(3)
@@ -57,18 +60,18 @@ def experiment(config: DictConfig):
 
         train_correlation = pearson_correlation(train_df.similarity, train_df.score)
         test_correlation = pearson_correlation(test_df.similarity, test_df.score)
-        logger.info('Cross Validation Split {}', i)
-        logger.info('Train correlation {}', train_correlation)
-        logger.info('Test correlation {}', test_correlation)
+        logger.info('Cross Validation Split %s', i)
+        logger.info('Train correlation %s', train_correlation)
+        logger.info('Test correlation %s', test_correlation)
         results.append({'train': train_correlation, 'test': test_correlation})
 
     result_df = pd.DataFrame(results)
 
-    logger.info('Encoder {}', config.model.encoder)
-    logger.info('Pooling {}', config.model.pooling)
-    logger.info('Normalizer {}', config.model.normalizer)
-    logger.info('Train correlation {}', result_df.train.mean())
-    logger.info('Test correlation {}', result_df.test.mean())
+    logger.info('Encoder %s', config.model.encoder)
+    logger.info('Pooling %s', config.model.pooling)
+    logger.info('Normalizer %s', config.model.normalizer)
+    logger.info('Mean Train correlation %s', result_df.train.mean())
+    logger.info('Mean Test correlation %s', result_df.test.mean())
 
 
 if __name__ == '__main__':

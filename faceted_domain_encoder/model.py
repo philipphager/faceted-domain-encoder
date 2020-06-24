@@ -1,4 +1,5 @@
 import copy
+import logging
 import os
 from enum import Enum
 
@@ -6,7 +7,6 @@ import hydra
 # noinspection PyUnresolvedReferences
 import swifter
 import torch
-from loguru import logger
 from omegaconf import OmegaConf
 from pytorch_lightning.core import LightningModule
 from sklearn.model_selection import train_test_split
@@ -26,6 +26,8 @@ from .pooling import MeanPooling, MaxPooling, CategoryAttentionPooling
 from .util.linalg import CategoryDistance
 from .util.plotting import plot_text, plot_attention, plot_category_weight
 from .util.preprocessing import load_data_file, TextProcessor, load_embeddings
+
+logger = logging.getLogger(__name__)
 
 
 class NormalizationStrategy(Enum):
@@ -84,17 +86,14 @@ class FacetedDomainEncoder(LightningModule):
         path = hydra.utils.to_absolute_path(self.hparams.model.vocabulary_path)
 
         if existing_vocabulary and os.path.exists(path):
-            logger.info('Vocabulary found on disk. Loading: {}', path)
+            logger.info('Vocabulary found on disk. Loading: %s', path)
             self.processor.load(path)
             self._init_normalizer()
 
         # Define empty embedding layers, embeddings are created after pre-processing
         self.word_embedding = nn.Embedding(len(self.processor.vocabulary), self.hparams.model.word_embedding_dims)
         self.graph_embedding = nn.Embedding(len(self.processor.vocabulary), self.hparams.model.graph_embedding_dims)
-        logger.info('Created model: {encoder}, {pooling}, {normalizer}',
-                    encoder=hparams.model.encoder,
-                    pooling=hparams.model.pooling,
-                    normalizer=hparams.model.normalizer)
+        logger.info('Created model: {}, {}, {}', hparams.model.encoder, hparams.model.pooling, hparams.model.normalizer)
 
     def forward(self,
                 doc1, doc1_categories, doc1_lengths,
@@ -153,7 +152,7 @@ class FacetedDomainEncoder(LightningModule):
 
         # Optionally sample training data
         if self.hparams.data.should_sample:
-            logger.info('Sampling training file: {samples}', samples=self.hparams.data.samples)
+            logger.info('Sampling training file: %s', self.hparams.data.samples)
             self.df = self.df.sample(self.hparams.data.samples, random_state=self.hparams.data.random_state)
 
         logger.info('Preprocess text')
