@@ -22,8 +22,18 @@ Dataset: Split of Joachims et al.: http://disi.unitn.eu/moschitti/corpora.htm
 """
 
 
-def prepare_dataset(in_path, out_path):
-    return OhsumedDataset(in_path, out_path).load()
+def prepare_datasets(config):
+    train_df = OhsumedDataset(
+        hydra.utils.to_absolute_path(config.data.raw_train_path),
+        hydra.utils.to_absolute_path(config.data.train_path)
+    ).load()
+
+    test_df = OhsumedDataset(
+        hydra.utils.to_absolute_path(config.data.raw_test_path),
+        hydra.utils.to_absolute_path(config.data.test_path)
+    ).load()
+
+    return train_df, test_df
 
 
 def train_model(config):
@@ -65,14 +75,7 @@ def classify(model, train_df, test_df):
 
 @hydra.main('../../config', 'ohsumed_config.yaml')
 def experiment(config):
-    train_df = prepare_dataset(
-        hydra.utils.to_absolute_path(config.data.raw_train_path),
-        hydra.utils.to_absolute_path(config.data.train_path))
-
-    test_df = prepare_dataset(
-        hydra.utils.to_absolute_path(config.data.raw_test_path),
-        hydra.utils.to_absolute_path(config.data.test_path))
-
+    train_df, test_df = prepare_datasets(config)
     model = train_model(config)
     classify(model, train_df, test_df)
 
