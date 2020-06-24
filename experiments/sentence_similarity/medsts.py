@@ -6,7 +6,7 @@ from omegaconf import DictConfig
 from pytorch_lightning import Trainer
 from pytorch_lightning import callbacks
 
-from experiments.sentence_similarity.util import to_file, sentence_similarity, pearson_correlation
+from experiments.sentence_similarity.util import to_file, sentence_similarity, pearson_correlation, plot_scatter
 from experiments.util.env import use_gpu
 from faceted_domain_encoder import FacetedDomainEncoder
 
@@ -69,6 +69,12 @@ def experiment(config: DictConfig):
 
     train_correlation = pearson_correlation(train_df.similarity, train_df.score)
     test_correlation = pearson_correlation(test_df.similarity, test_df.score)
+
+    train_chart = plot_scatter(train_df, train_correlation)
+    train_chart.save('train_chart.json')
+
+    test_chart = plot_scatter(test_df, test_correlation)
+    test_chart.save('test_chart.json')
 
     logger.info('Encoder %s', config.model.encoder)
     logger.info('Pooling %s', config.model.pooling)
