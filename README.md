@@ -9,13 +9,29 @@
 ## Run experiments
 1. Activate virtual environment: `poetry shell`
 2. Run experiment script from project directory, e.g.:
+    ```
+    python experiments/sentence_similarity/medsts.py
+    ```
+3. Evaluate all model architectures, e.g.:
+    ```bash
+    python experiments/sentence_similarity/medsts.py --multirun \
+        encoder=gru,lstm,transformer \
+        pooling=category_attention,max,mean \
+        normalizer=corpus,document
+    ```
+  
+## Experiments
+### Sentence Similarity Tasks
+#### MedSTS
 ```
 python experiments/sentence_similarity/medsts.py
 ```
-3. Run a parameter sweep for an experiment, e.g.:
-```bash
-python experiments/sentence_similarity/medsts.py --multirun \
-    encoder=gru,lstm,transformer \
-    pooling=category_attention,max,mean \
-    normalizer=corpus,document
+#### BIOSSES
+```
+python experiments/sentence_similarity/medsts.py
+```
+### Text Classification
+#### OHSUMED
+```
+python experiments/classification/ohsumed.py
 ```
