@@ -1,7 +1,7 @@
 hydra:
   run:
-    dir: ./outputs/${data.name}-${model.encoder}-${model.pooling}
+    dir: ./outputs/${data.name}-${model.encoder}-${model.pooling}-${model.normalizer}
 
   sweep:
     dir: ./outputs/
-    subdir: ${data.name}-${model.encoder}-${model.pooling}
+    subdir: ${data.name}-${model.encoder}-${model.pooling}-${model.normalizer}
