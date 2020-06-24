@@ -70,8 +70,8 @@ def experiment(config: DictConfig):
     logger.info('Encoder %s', config.model.encoder)
     logger.info('Pooling %s', config.model.pooling)
     logger.info('Normalizer %s', config.model.normalizer)
-    logger.info('Mean Train correlation %s', result_df.train.mean())
-    logger.info('Mean Test correlation %s', result_df.test.mean())
+    logger.info('BIOSSES Train correlation %s', result_df.train.mean())
+    logger.info('BIOSSES Test correlation %s', result_df.test.mean())
 
 
 if __name__ == '__main__':

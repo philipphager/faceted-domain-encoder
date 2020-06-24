@@ -16,7 +16,7 @@
     ```bash
     python experiments/sentence_similarity/medsts.py --multirun \
         encoder=gru,lstm,transformer \
-        pooling=category_attention,max,mean \
+        pooling=category_attention \
         normalizer=corpus,document
     ```
   
@@ -34,4 +34,14 @@ python experiments/sentence_similarity/medsts.py
 #### OHSUMED
 ```
 python experiments/classification/ohsumed.py
+```
+
+#### Cancer Hallmarks
+```
+python experiments/classification/hallmarks.py
+```
+
+### Grep Outputs from Logs
+```
+ find outputs/ -type f | xargs grep -n 'MedSTS Test'
 ```

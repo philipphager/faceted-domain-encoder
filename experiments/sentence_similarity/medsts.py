@@ -79,8 +79,8 @@ def experiment(config: DictConfig):
     logger.info('Encoder %s', config.model.encoder)
     logger.info('Pooling %s', config.model.pooling)
     logger.info('Normalizer %s', config.model.normalizer)
-    logger.info('Train correlation %s', train_correlation)
-    logger.info('Test correlation %s', test_correlation)
+    logger.info('MedSTS Train correlation %s', train_correlation)
+    logger.info('MedSTS Test correlation %s', test_correlation)
 
 
 if __name__ == '__main__':
