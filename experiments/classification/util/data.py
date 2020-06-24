@@ -2,6 +2,7 @@ import csv
 import os
 
 import pandas as pd
+from sklearn.model_selection import train_test_split
 
 
 class OhsumedDataset:
@@ -72,3 +73,66 @@ class OhsumedDataset:
             'C23': 'Pathological Conditions, Signs and Symptoms'
         }
         return directory2category[directory]
+
+
+class HallmarksDataset:
+    def __init__(self,
+                 in_text_path: str,
+                 in_label_path: str,
+                 out_train_path: str,
+                 out_test_path: str):
+        self.in_text_path = in_text_path
+        self.in_label_path = in_label_path
+        self.out_train_path = out_train_path
+        self.out_test_path = out_test_path
+
+    def load(self):
+        df = self._parse(self.in_text_path)
+        label_df = self._parse(self.in_label_path)
+        df['label'] = label_df.document.map(self._find_labels)
+        df = df[df.label.map(lambda x: len(x) > 0)]
+
+        train_df, test_df = train_test_split(df, test_size=0.3, random_state=42)
+
+        self._to_txt(train_df, self.out_train_path)
+        self._to_txt(test_df, self.out_test_path)
+        return train_df, test_df
+
+    def _parse(self, base_dir):
+        strip = lambda x: x.replace('\n', ' ').replace('\r', ' ')
+        rows = []
+
+        for file in os.listdir(base_dir):
+            reader = open(os.path.join(base_dir, file), mode='r')
+
+            document_id = file.split('.txt')[0]
+            text = reader.read()
+            document = strip(text)
+            reader.close()
+            rows.append({'id': document_id, 'document': document})
+
+        return pd.DataFrame(rows)
+
+    def _find_labels(self, text):
+        categories = [
+            'Sustaining proliferative signaling',
+            'Evading growth suppressors',
+            'Resisting cell death',
+            'Enabling replicative immortality',
+            'Inducing angiogenesis',
+            'Activating invasion and metastasis',
+            'Genomic instability and mutation',
+            'Tumor promoting inflammation',
+            'Cellular energetics',
+            'Avoiding immune destruction',
+        ]
+
+        return [category for category in categories if category in text]
+
+    def _to_txt(self, df, output_file):
+        df[['document']].to_csv(output_file,
+                                sep='\t',
+                                index=False,
+                                header=False,
+                                quoting=csv.QUOTE_NONE,
+                                encoding='utf-8')
