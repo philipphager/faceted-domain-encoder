@@ -236,7 +236,7 @@ class FacetedDomainEncoder(LightningModule):
         return {'loss': loss}
 
     def validation_epoch_end(self, steps):
-        mean_loss = torch.stack([step['loss'] for step in steps]).mean().item()
+        mean_loss = torch.stack([step['loss'] for step in steps]).mean()
         return {'val_loss': mean_loss}
 
     def on_train_end(self):
