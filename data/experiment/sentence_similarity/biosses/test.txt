@@ -1,0 +1,20 @@
+BAF53 and β-actin subunits have been implicated in mammalian SWI/SNF-regulated binding to the chromatin/nuclear matrix.
+β-actin and actin-related proteins have been found in the various ATP-dependent chromatin remodeling complexes
+"With respect to LATS2, it has been reported that LATS2 induces G2/M arrest and subsequent apoptotic cell death."
+"The expression of miR-146a has been found to be up-regulated in papillary thyroid carcinoma, anaplastic thyroid cancer  and cervical cancer."
+The up-regulation of miR-146a was also detected in cervical cancer tissues.
+"Similarly to PLK1, Aurora-A activity is required for the enrichment or localisation of multiple centrosomal factors which have roles in maturation, including LATS2 and CDK5RAP2/Cnn."
+The cyclin-dependent kinase (CDK) inhibitor roscovitine has been reported to down-regulate the anti-apoptotic protein Mcl-1
+Recent work in model systems and acute myelogenous leukemia has suggested that expression of MCL-1 is a key determinant of resistance to ABT-737
+"At the onset of mitosis, LATS2 is activated by phosphorylation and plays important roles in G2/M transition in cultured cells "
+Lats2/Kpm is homologous to Lats1 and undergoes cell cycle-dependent phosphorylation
+"Ironically, Rest has recently been described as both a tumor suppressor and an oncogene."
+In human epithelial cells REST has been described as a potent suppressor of malignant transformation and its deregulation has been associated with several non-neural tumors including breast and small cell lung cancers
+"Alterations in Oct-4 expression promote differentiation and leads to the specification of ectodermal, endodermal or mesodermal primitive progenitors."
+"OCT4, a transcript of POU5F1, plays a role in maintaining stem cell pluripotency, self-renewal and chromatin structure in stem cells, and promotes tumor growth in a dose-dependent manner."
+"Three programs, PicTar, miRanda, and TargetScan , were used to predict the targets of miR-21."
+The genes that decreased 2-fold or more were further screened for possible miR-372/3 target sites using a local version of the TargetScan algorithm.
+The recent reports demonstrated that the first eight nucleotides of the 5′ end of miRNA could correlate with the efficient translational repression.
+Mismatches near the 5′ end of the small RNA completely abrogated translational suppression.
+Oncogenic KRAS mutations are common in cancer.
+"Notably, c-Raf has recently been found essential for development of K-Ras-driven NSCLCs."
