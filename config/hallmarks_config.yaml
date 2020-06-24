@@ -18,7 +18,7 @@ model:
   min_category_dimensions: 32
 
 training:
-  learning_rate: 0.001
+  learning_rate: 0.003
   batch_size: 32
   samples_per_document: 8
   sampling: error_weighted

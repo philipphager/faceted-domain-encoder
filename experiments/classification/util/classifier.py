@@ -10,17 +10,21 @@ from experiments.classification.util.optimizer import RAdam
 
 class Classifier(LightningModule):
     def __init__(self,
-                 x_train,
+                 X_train,
                  y_train,
-                 x_test,
+                 X_val,
+                 y_val,
+                 X_test,
                  y_test,
                  input_dims: int,
                  hidden_dims: int,
                  output_dims: int):
         super().__init__()
-        self.x_train = x_train
+        self.X_train = X_train
         self.y_train = y_train
-        self.x_test = x_test
+        self.X_val = X_val
+        self.y_val = y_val
+        self.X_test = X_test
         self.y_test = y_test
 
         self.input = nn.Linear(input_dims, hidden_dims)
@@ -29,9 +33,6 @@ class Classifier(LightningModule):
         self.norm = nn.LayerNorm(hidden_dims)
         self.criterion = nn.BCELoss()
         self.dropout = nn.Dropout(0.3)
-
-    def prepare_data(self):
-        self.x_train, self.x_val, self.y_train, self.y_val = train_test_split(self.x_train, self.y_train)
 
     def forward(self, x):
         x = self.input(x)
@@ -56,7 +57,7 @@ class Classifier(LightningModule):
         return RAdam(self.parameters(), lr=0.003)
 
     def train_dataloader(self):
-        dataset = Dataset(self.x_train, self.y_train)
+        dataset = Dataset(self.X_train, self.y_train)
         loader = data.DataLoader(dataset, batch_size=32, num_workers=4)
         return loader
 
@@ -71,7 +72,7 @@ class Classifier(LightningModule):
         return {'val_loss': avg_loss}
 
     def val_dataloader(self):
-        dataset = Dataset(self.x_val, self.y_val)
+        dataset = Dataset(self.X_val, self.y_val)
         loader = data.DataLoader(dataset, batch_size=32, num_workers=4)
         return loader
 
@@ -86,7 +87,7 @@ class Classifier(LightningModule):
         return {'test_loss': avg_loss}
 
     def test_dataloader(self):
-        dataset = Dataset(self.x_test, self.y_test)
+        dataset = Dataset(self.X_test, self.y_test)
         loader = data.DataLoader(dataset, batch_size=32, num_workers=4)
         return loader
 
