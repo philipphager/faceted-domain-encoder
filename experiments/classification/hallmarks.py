@@ -7,7 +7,7 @@ import pandas as pd
 import torch
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import EarlyStopping
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, roc_auc_score
 from sklearn.preprocessing import LabelBinarizer
 
 from experiments.classification.util.classifier import Classifier
@@ -65,7 +65,7 @@ def train_model(config):
     return model
 
 
-def classify(model, train_df, test_df):
+def classify(model, train_df, test_df, label):
     encoder = LabelBinarizer()
     encoder.fit(train_df.label.values)
 
@@ -83,7 +83,9 @@ def classify(model, train_df, test_df):
     y_predict[y_predict > 0.5] = 1
     y_predict[y_predict < 1] = 0
 
+    logger.info('Hallmarks Classification: %s', label)
     logger.info(classification_report(y_test, y_predict, target_names=encoder.classes_))
+    logger.info(roc_auc_score(y_test, y_predict))
 
 
 @hydra.main('../../config', 'hallmarks_config.yaml')
@@ -104,7 +106,7 @@ def experiment(config):
         to_txt(test_df, test_path)
 
         model = train_model(config)
-        classify(model, train_df, test_df)
+        classify(model, train_df, test_df, label)
 
 
 if __name__ == '__main__':
