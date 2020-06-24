@@ -12,11 +12,9 @@ events*
 .ipynb_checkpoints
 
 ## Data and models
-data/
-*.csv
+data/graph/
 *.zip
 *.bin
-*.txt
 
 ## OSX
 .DS_Store
