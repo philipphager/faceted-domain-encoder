@@ -1,8 +1,9 @@
 data:
   name: ohsumed_classification
-  base_path: 'data/ohsumed.txt'
-  train_path: 'data/classification/ohsumed/train.txt'
-  test_path: 'data/classification/ohsumed/test.txt'
+  raw_train_path: 'data/experiment/classification/ohsumed/train/'
+  raw_test_path: 'data/experiment/classification/ohsumed/test/'
+  train_path: 'data/experiment/classification/ohsumed/train.txt'
+  test_path: 'data/experiment/classification/ohsumed/test.txt'
   should_stop: True
   should_sample: False
   samples: 0

@@ -1,0 +1,40 @@
+defaults:
+  - dataset: ohsumed_classification
+  - encoder: gru
+  - normalizer: document
+  - pooling: category_attention
+  - word: fasttext
+  - graph: mesh
+  - hydra: default
+
+model:
+  vocabulary_path: 'vocabulary.json'
+  encoder_layers: 1
+  dropout: 0.2
+  is_bidirectional: True
+  word_embedding_dims: 300
+  graph_embedding_dims: 100
+  document_embedding_dims: 512
+  min_category_dimensions: 32
+
+training:
+  learning_rate: 0.001
+  batch_size: 64
+  samples_per_document: 8
+  sampling: error_weighted
+  k_embedding: 8
+  k_graph: 32
+  num_workers: 4
+
+validation:
+  batch_size: 64
+  samples_per_document: 8
+  sampling: uniform
+  k_embedding: 0
+  k_graph: 16
+  num_workers: 4
+
+trainer:
+  gpus: 1
+  max_epochs: 20
+  export_embeddings: False
