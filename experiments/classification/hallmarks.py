@@ -1,14 +1,16 @@
+import csv
 import logging
+import os
 
 import hydra
+import pandas as pd
 import torch
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import EarlyStopping
 from sklearn.metrics import classification_report
-from sklearn.preprocessing import MultiLabelBinarizer
+from sklearn.preprocessing import LabelBinarizer
 
 from experiments.classification.util.classifier import Classifier
-from experiments.classification.util.data import OhsumedDataset, HallmarksDataset
 from experiments.classification.util.util import embed
 from experiments.util.env import use_gpu
 from faceted_domain_encoder import FacetedDomainEncoder
@@ -16,19 +18,36 @@ from faceted_domain_encoder import FacetedDomainEncoder
 logger = logging.getLogger(__name__)
 
 """"
-Cancer Hallmarks Classification
+Cancer Hallmarks Classification, 10 Binary Classifiers
 Authors: Simon Baker, Ilona Silins, Yufan Guo, Imran Ali, Johan Hogberg, Ulla Stenius, Anna Korhonen
-Dataset: https://github.com/sb895/Hallmarks-of-Cancer 
+Dataset: https://github.com/cambridgeltl/cancer-hallmark-cnn 
 """
 
 
-def prepare_datasets(config):
-    return HallmarksDataset(
-        hydra.utils.to_absolute_path(config.data.raw_text_path),
-        hydra.utils.to_absolute_path(config.data.raw_label_path),
-        hydra.utils.to_absolute_path(config.data.train_path),
-        hydra.utils.to_absolute_path(config.data.test_path),
-    ).load()
+def get_dataset(base_dir, label_dir, dataset):
+    class_directory = os.path.join(base_dir, label_dir)
+
+    pos_df = pd.read_csv(os.path.join(class_directory, dataset + '.pos'), header=None, sep='\n')
+    pos_df['label'] = 'pos'
+
+    neg_df = pd.read_csv(os.path.join(class_directory, dataset + '.neg'), header=None, sep='\n')
+    neg_df['label'] = 'neg'
+
+    # Join positive and negative datasets and shuffle
+    df = pd.concat((pos_df, neg_df))
+    df = df.sample(len(df), random_state=42)
+    df.columns = ['document', 'label']
+    return df
+
+
+def to_txt(df, output_file):
+    df[['document']].to_csv(
+        output_file,
+        sep='\t',
+        index=False,
+        header=False,
+        quoting=csv.QUOTE_NONE,
+        encoding='utf-8')
 
 
 def train_model(config):
@@ -47,16 +66,15 @@ def train_model(config):
 
 
 def classify(model, train_df, test_df):
-    encoder = MultiLabelBinarizer()
+    encoder = LabelBinarizer()
     encoder.fit(train_df.label.values)
-    num_classes = len(encoder.classes_)
 
     X_train = embed(model, train_df)
     X_test = embed(model, test_df)
     y_train = torch.from_numpy(encoder.transform(train_df.label.values)).float()
     y_test = torch.from_numpy(encoder.transform(test_df.label.values)).float()
 
-    classifier = Classifier(X_train, y_train, X_test, y_test, 512, 128, num_classes)
+    classifier = Classifier(X_train, y_train, X_test, y_test, 512, 128, 1)
     trainer = Trainer(early_stop_callback=EarlyStopping(monitor='val_loss', patience=2))
     trainer.fit(classifier)
 
@@ -70,9 +88,23 @@ def classify(model, train_df, test_df):
 
 @hydra.main('../../config', 'hallmarks_config.yaml')
 def experiment(config):
-    train_df, test_df = prepare_datasets(config)
-    model = train_model(config)
-    classify(model, train_df, test_df)
+    base_dir = hydra.utils.to_absolute_path(config.data.raw_path)
+    train_path = hydra.utils.to_absolute_path(config.data.train_path)
+    test_path = hydra.utils.to_absolute_path(config.data.test_path)
+
+    for label in sorted(os.listdir(base_dir)):
+        logger.info('Classifying: %s', label)
+
+        train_df = pd.concat((
+            get_dataset(base_dir, label, 'train'),
+            get_dataset(base_dir, label, 'devel')))
+        test_df = get_dataset(base_dir, label, 'test')
+
+        to_txt(train_df, train_path)
+        to_txt(test_df, test_path)
+
+        model = train_model(config)
+        classify(model, train_df, test_df)
 
 
 if __name__ == '__main__':

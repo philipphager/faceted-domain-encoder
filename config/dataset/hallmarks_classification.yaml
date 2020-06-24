@@ -1,7 +1,6 @@
 data:
   name: ohsumed_classification
-  raw_text_path: 'data/experiment/classification/hallmarks/text'
-  raw_label_path: 'data/experiment/classification/hallmarks/labels'
+  raw_path: 'data/experiment/classification/hallmarks/oversampled'
   train_path: 'data/experiment/classification/hallmarks/train.txt'
   test_path: 'data/experiment/classification/hallmarks/test.txt'
   should_stop: True
