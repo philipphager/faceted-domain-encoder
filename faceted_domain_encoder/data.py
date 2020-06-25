@@ -23,7 +23,7 @@ class SiameseDataset(data.Dataset):
         self.documents = df.text.values
         self.document_index = torch.stack(df.document_index.to_list())
         self.document_category = torch.stack(df.document_category.to_list())
-        self.document_length = torch.IntTensor(df.document_length.to_list())
+        self.document_length = torch.tensor(df.document_length.to_list(), dtype=torch.int)
         self.num_documents = len(df)
 
         self.domain2vec = domain2vec
@@ -35,17 +35,18 @@ class SiameseDataset(data.Dataset):
 
         self.on_epoch(0)
 
+    def __len__(self):
+        return self.num_documents * self.samples_per_document
+
     def __getitem__(self, i):
         document_id = math.floor(i / self.samples_per_document)
 
-        neighbours = self.document2neighbours[document_id]
-        documents = neighbours['documents']
-        probabilities = neighbours['probabilities']
-        graph_distances = neighbours['graph']
-
-        sample_position = torch.multinomial(probabilities, 1).item()
-        neighbour_id = documents[sample_position].item()
-        distance = graph_distances[sample_position]
+        if self.sampling_strategy == SamplingStrategy.ERROR_WEIGHTED:
+            document_id, neighbour_id, distance = self._sample_error_weighted_pair(document_id)
+        elif self.sampling_strategy == SamplingStrategy.UNIFORM:
+            document_id, neighbour_id, distance = self._sample_uniform(document_id)
+        else:
+            raise RuntimeError(f'Unknown sampling strategy {self.sampling_strategy}')
 
         return self.document_index[document_id], \
                self.document_category[document_id], \
@@ -55,8 +56,21 @@ class SiameseDataset(data.Dataset):
                self.document_length[neighbour_id], \
                distance
 
-    def __len__(self):
-        return self.num_documents * self.samples_per_document
+    def _sample_error_weighted_pair(self, document_id):
+        neighbours = self.document2neighbours[document_id]
+        documents = neighbours['documents']
+        probabilities = neighbours['probabilities']
+        graph_distances = neighbours['graph']
+
+        sample_position = torch.multinomial(probabilities, 1).item()
+        neighbour_id = documents[sample_position].item()
+        distance = graph_distances[sample_position]
+        return document_id, neighbour_id, distance
+
+    def _sample_uniform(self, document_id):
+        neighbour_id = torch.randint(self.num_documents, (1,)).item()
+        distance = self.graph2vec.get_distance(document_id, neighbour_id)
+        return document_id, neighbour_id, distance
 
     def on_epoch(self, epoch):
         if epoch == 0:
@@ -102,7 +116,7 @@ class SiameseDataset(data.Dataset):
             domain_distances = self.domain2vec.get_distance_to_items(document, neighbours)
 
             if self.sampling_strategy == SamplingStrategy.ERROR_WEIGHTED:
-                probabilities = ((graph_distances - domain_distances)**2).sum(-1)
+                probabilities = ((graph_distances - domain_distances) ** 2).sum(-1)
                 probabilities = probabilities / probabilities.sum()
             elif self.sampling_strategy == SamplingStrategy.UNIFORM:
                 probabilities = torch.ones(neighbours.size(0)) / neighbours.size(0)
