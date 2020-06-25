@@ -238,11 +238,13 @@ class FacetedDomainEncoder(LightningModule):
         x1, x1_category, x1_length, x2, x2_category, x2_length, y = batch
         y_predict = self.forward(x1, x1_category, x1_length, x2, x2_category, x2_length)
         loss = self.mse_loss(y_predict, y)
-        return {'loss': loss}
+        log = {'step/val/loss': loss}
+        return {'loss': loss, 'log': log}
 
     def validation_epoch_end(self, steps):
         mean_loss = torch.stack([step['loss'] for step in steps]).mean()
-        return {'val_loss': mean_loss}
+        log = {'epoch/val/loss': mean_loss}
+        return {'val_loss': mean_loss, 'log': log}
 
     def on_train_end(self):
         logger.info('Training end')
