@@ -50,7 +50,7 @@ class EncoderStrategy(Enum):
 
 
 class FacetedDomainEncoder(LightningModule):
-    def __init__(self, hparams, existing_vocabulary=False):
+    def __init__(self, hparams):
         super().__init__()
         self.hparams = hparams
         self.encoder_strategy = EncoderStrategy(self.hparams.model.encoder)
@@ -84,16 +84,17 @@ class FacetedDomainEncoder(LightningModule):
             self.hparams.data.should_stop)
 
         # Load vocabulary if already exists
-        path = hydra.utils.to_absolute_path(self.hparams.model.vocabulary_path)
+        path = self.hparams.model.vocabulary_path
 
-        if existing_vocabulary and os.path.exists(path):
+        if os.path.exists(path):
             logger.info('Vocabulary found on disk. Loading: %s', path)
             self.processor.load(path)
             self._init_normalizer()
-
-        # Define empty embedding layers, embeddings are created after pre-processing
-        self.word_embedding = nn.Embedding(len(self.processor.vocabulary), self.hparams.model.word_embedding_dims)
-        self.graph_embedding = nn.Embedding(len(self.processor.vocabulary), self.hparams.model.graph_embedding_dims)
+            self._init_embeddings()
+        else:
+            # Define empty embedding layers, embeddings are created after pre-processing
+            self.word_embedding = nn.Embedding(len(self.processor.vocabulary), self.hparams.model.word_embedding_dims)
+            self.graph_embedding = nn.Embedding(len(self.processor.vocabulary), self.hparams.model.graph_embedding_dims)
         logger.info('Created model: %s, %s, %s', hparams.model.encoder, hparams.model.pooling, hparams.model.normalizer)
 
     def forward(self,
@@ -173,16 +174,6 @@ class FacetedDomainEncoder(LightningModule):
                                                                axis=1,
                                                                result_type='expand')
 
-        # Embed vocabulary with FastText and Node2Vec
-        word_embeddings, graph_embeddings = load_embeddings(
-            vocabulary=self.processor.vocabulary,
-            word_embedding_path=hydra.utils.to_absolute_path(self.hparams.word.embedding),
-            graph_embedding_path=hydra.utils.to_absolute_path(self.hparams.graph.embedding))
-
-        self.word_embedding = nn.Embedding.from_pretrained(word_embeddings, padding_idx=0, freeze=True)
-        self.graph_embedding = nn.Embedding.from_pretrained(graph_embeddings, padding_idx=0, freeze=True)
-        self.processor.save(self.hparams.model.vocabulary_path)
-
         # Train / validation split
         self.train_df, self.validation_df = train_test_split(
             self.df,
@@ -192,6 +183,18 @@ class FacetedDomainEncoder(LightningModule):
 
         # Normalizers require the vocabulary, init after pre-processing
         self._init_normalizer()
+        self._init_embeddings()
+        self.processor.save(self.hparams.model.vocabulary_path)
+
+    def _init_embeddings(self):
+        # Embed vocabulary with FastText and Node2Vec
+        word_embeddings, graph_embeddings = load_embeddings(
+            vocabulary=self.processor.vocabulary,
+            word_embedding_path=hydra.utils.to_absolute_path(self.hparams.word.embedding),
+            graph_embedding_path=hydra.utils.to_absolute_path(self.hparams.graph.embedding))
+
+        self.word_embedding = nn.Embedding.from_pretrained(word_embeddings, padding_idx=0, freeze=True)
+        self.graph_embedding = nn.Embedding.from_pretrained(graph_embeddings, padding_idx=0, freeze=True)
 
     def train_dataloader(self) -> DataLoader:
         self.train_dataset = self._get_dataset(
