@@ -286,9 +286,13 @@ class FacetedDomainEncoder(LightningModule):
         path = hydra.utils.to_absolute_path(self.hparams.graph.path)
 
         if name == 'mesh':
-            graph_factory = MeSHFactory(graph_path=path)
+            graph_factory = MeSHFactory(
+                graph_path=path,
+                in_path=hydra.utils.to_absolute_path(self.hparams.graph.raw_path))
         elif name == 'aviation':
-            graph_factory = AviationFactory(graph_path=path)
+            graph_factory = AviationFactory(
+                graph_path=path,
+                in_path=hydra.utils.to_absolute_path(self.hparams.graph.raw_path))
         else:
             raise RuntimeError(f'Unknown graph {name}')
 

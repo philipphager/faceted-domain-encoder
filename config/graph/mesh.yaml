@@ -2,6 +2,7 @@ graph:
     name: mesh
     path: 'data/graph/mesh/graph.json'
     embedding: 'data/graph/mesh/embedding.json'
+    raw_path: 'data/graph/mesh/desc2020.xml'
     num_categories: 16
     categories:
         - 'Anatomy [A]'

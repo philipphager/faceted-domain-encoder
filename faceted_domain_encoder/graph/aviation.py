@@ -21,7 +21,7 @@ CATEGORIES = [
 
 
 class AviationFactory(KnowledgeGraphFactory):
-    def __init__(self, graph_path: str, in_path='data/graph/aviation/graph-meta.json'):
+    def __init__(self, graph_path: str, in_path: str):
         super().__init__(graph_path)
         self.in_path = in_path
 

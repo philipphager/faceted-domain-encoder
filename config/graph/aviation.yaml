@@ -1,7 +1,8 @@
 graph:
     name: aviation
-    path: 'data/aviation/graph/graph.json'
-    embedding: 'data/aviation/node2vec/graph.json'
+    path: 'data/graph/aviation/graph.json'
+    embedding: 'data/graph/aviation/embedding.json'
+    raw_path: 'data/graph/aviation/preprocessing.json'
     num_categories: 12
     categories:
         - 'Airport [A]'

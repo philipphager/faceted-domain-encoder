@@ -27,13 +27,13 @@ CATEGORIES = [
 
 
 class MeSHFactory(KnowledgeGraphFactory):
-    def __init__(self, graph_path: str, xml_path='data/graph/mesh/desc2020.xml'):
+    def __init__(self, graph_path: str, in_path: str):
         super().__init__(graph_path)
-        self.xml_path = xml_path
+        self.in_path = in_path
         self.max_synonyms = 5
 
     def _create(self):
-        tree2concept, term2concept, concept2name, concept2category = self._parse_xml(self.xml_path)
+        tree2concept, term2concept, concept2name, concept2category = self._parse_xml(self.in_path)
         graph = self._create_graph(tree2concept, concept2name, concept2category)
         return KnowledgeGraph(graph, term2concept, concept2name)
 
