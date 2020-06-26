@@ -13,6 +13,7 @@ from sklearn.preprocessing import LabelBinarizer
 from experiments.classification.util.classifier import Classifier
 from experiments.classification.util.util import embed
 from experiments.util.env import use_gpu
+from experiments.util.training import train_model
 from faceted_domain_encoder import FacetedDomainEncoder
 
 logger = logging.getLogger(__name__)
@@ -48,21 +49,6 @@ def to_txt(df, output_file):
         header=False,
         quoting=csv.QUOTE_NONE,
         encoding='utf-8')
-
-
-def train_model(config):
-    use_gpu(2)
-
-    trainer = Trainer(
-        gpus=config.trainer.gpus,
-        max_epochs=config.trainer.max_epochs,
-        early_stop_callback=EarlyStopping(),
-    )
-
-    model = FacetedDomainEncoder(config)
-    trainer.fit(model)
-    model.cpu()
-    return model
 
 
 def classify(model, train_df, val_df, test_df, label):

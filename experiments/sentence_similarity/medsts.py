@@ -3,12 +3,9 @@ import logging
 import hydra
 import pandas as pd
 from omegaconf import DictConfig
-from pytorch_lightning import Trainer
-from pytorch_lightning import callbacks
 
 from experiments.sentence_similarity.util import to_file, sentence_similarity, pearson_correlation, plot_scatter
-from experiments.util.env import use_gpu
-from faceted_domain_encoder import FacetedDomainEncoder
+from experiments.util.training import train_model
 
 logger = logging.getLogger(__name__)
 
@@ -34,21 +31,6 @@ def prepare_test(in_path, score_path, out_path):
     frame.columns = ['pair_id', 'sentence_1', 'sentence_2', 'score']
     to_file(frame, out_path)
     return frame
-
-
-def train_model(config):
-    use_gpu(3)
-
-    trainer = Trainer(
-        gpus=config.trainer.gpus,
-        max_epochs=config.trainer.max_epochs,
-        early_stop_callback=callbacks.EarlyStopping(),
-    )
-
-    model = FacetedDomainEncoder(config)
-    trainer.fit(model)
-    model.cpu()
-    return model
 
 
 @hydra.main('../../config', 'medsts_config.yaml')

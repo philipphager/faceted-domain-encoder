@@ -10,8 +10,7 @@ from sklearn.preprocessing import MultiLabelBinarizer
 from experiments.classification.util.classifier import Classifier
 from experiments.classification.util.data import OhsumedDataset
 from experiments.classification.util.util import embed
-from experiments.util.env import use_gpu
-from faceted_domain_encoder import FacetedDomainEncoder
+from experiments.util.training import train_model
 
 logger = logging.getLogger(__name__)
 
@@ -34,21 +33,6 @@ def prepare_datasets(config):
     ).load()
 
     return train_df, test_df
-
-
-def train_model(config):
-    use_gpu(2)
-
-    trainer = Trainer(
-        gpus=config.trainer.gpus,
-        max_epochs=config.trainer.max_epochs,
-        early_stop_callback=EarlyStopping(),
-    )
-
-    model = FacetedDomainEncoder(config)
-    trainer.fit(model)
-    model.cpu()
-    return model
 
 
 def classify(model, train_df, test_df):

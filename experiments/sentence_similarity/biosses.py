@@ -4,13 +4,10 @@ import os
 import hydra
 import pandas as pd
 from omegaconf import DictConfig
-from pytorch_lightning import Trainer
-from pytorch_lightning import callbacks
 from sklearn.model_selection import StratifiedKFold
 
 from experiments.sentence_similarity.util import to_file, sentence_similarity, pearson_correlation
-from experiments.util.env import use_gpu
-from faceted_domain_encoder import FacetedDomainEncoder
+from experiments.util.training import train_model
 
 logger = logging.getLogger(__name__)
 
@@ -19,21 +16,6 @@ BIOSSES Benchmark
 Authors: Gizem Soğancıoğlu, Hakime Öztürk, Arzucan Özgür
 Paper: https://academic.oup.com/bioinformatics/article/33/14/i49/3953954
 """
-
-
-def train_model(config):
-    use_gpu(3)
-
-    trainer = Trainer(
-        gpus=config.trainer.gpus,
-        max_epochs=config.trainer.max_epochs,
-        early_stop_callback=callbacks.EarlyStopping(),
-    )
-
-    model = FacetedDomainEncoder(config)
-    trainer.fit(model)
-    model.cpu()
-    return model
 
 
 @hydra.main('../../config', 'biosses_config.yaml')
