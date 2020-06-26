@@ -64,6 +64,11 @@ def ablation_study(model, config, frame, unique_tokens=False):
     for document_id, (document, ablation_category) in enumerate(zip(documents, ablation_categories)):
         ablation_category_id = category2index[ablation_category]
         document = documents[document_id]
+        result = {
+            'ablation_category_id': ablation_category_id,
+            'ablation_category': ablation_category,
+            'document_id': document_id,
+        }
 
         x = model.embed([document])
         model_input = model.processor(document)
@@ -71,34 +76,30 @@ def ablation_study(model, config, frame, unique_tokens=False):
         ablation_input, index, category, length = get_document_ablations(*model_input, unique_tokens)
         ablation, attention = model.forward_batch(*ablation_input, attention=True)
 
-        # Select most relevant words by distance increase to original embedding when removed
-        ablation_distances = model.category_distance(ablation, x)[:, ablation_category_id]
-        sort_by_distance = torch.argsort(ablation_distances, descending=True)
-        distance_index = index[sort_by_distance]
-        distance_category = category[sort_by_distance]
-        distance_mean_average_precision = get_mean_average_precision(distance_category, ablation_category_id)
+        if config.ablation.distance_map:
+            # Select most relevant words by distance increase to original embedding when removed
+            ablation_distances = model.category_distance(ablation, x)[:, ablation_category_id]
+            sort_by_distance = torch.argsort(ablation_distances, descending=True)
+            distance_index = index[sort_by_distance]
+            distance_category = category[sort_by_distance]
+            distance_mean_average_precision = get_mean_average_precision(distance_category, ablation_category_id)
+            result['distance_map'] = attention_mean_average_precision.item()
+            result['distance_tokens'] = get_tokens(model, distance_index)
+            result['distance_categories'] = get_category_names(config, distance_category)
 
-        # Select most relevant words by attention weight
-        attention = attention[0][ablation_category_id]
-        sort_by_attention = torch.argsort(attention, descending=True)
-        attention_index = index[sort_by_attention]
-        attention_category = category[sort_by_attention]
-        attention_mean_average_precision = get_mean_average_precision(attention_category, ablation_category_id)
+        if config.ablation.attention_map:
+            # Select most relevant words by attention weight
+            attention = attention[0][ablation_category_id]
+            sort_by_attention = torch.argsort(attention, descending=True)
+            attention_index = index[sort_by_attention]
+            attention_category = category[sort_by_attention]
+            attention_mean_average_precision = get_mean_average_precision(attention_category, ablation_category_id)
+            result['attention_map'] = distance_mean_average_precision.item()
+            result['attention_tokens'] = get_tokens(model, attention_index)
+            result['attention_categories'] = get_category_names(config, attention_category)
 
         # Meta data
-        num_tokens_in_category = category[category == ablation_category_id].size()
-
-        results.append({
-            'ablation_category_id': ablation_category_id,
-            'ablation_category': ablation_category,
-            'document_id': document_id,
-            'num_tokens_in_category': num_tokens_in_category,
-            'distance_map': attention_mean_average_precision.item(),
-            'attention_map': distance_mean_average_precision.item(),
-            'distance_tokens': get_tokens(model, distance_index),
-            'distance_categories': get_category_names(config, distance_category),
-            'attention_tokens': get_tokens(model, attention_index),
-            'attention_categories': get_category_names(config, attention_category)
-        })
+        result['num_tokens_in_category'] = category[category == ablation_category_id].size()
+        results.append(result)
 
     return pd.DataFrame(results)

@@ -29,22 +29,20 @@ def prepare_datasets(config):
     return train_df, test_df
 
 
-@hydra.main('../../config', 'ohsumed_config.yaml')
+@hydra.main('../../config', 'ohsumed_ablation_config.yaml')
 def experiment(config):
-    num_samples = 100
-
     prepare_datasets(config)
     model = train_model(config)
 
     logger.info('Test Set ablation study')
-    logger.info('Sampling %s documents per graph category for ablation study', num_samples)
-    df = sample_documents(config, model.test_df, num_samples)
+    logger.info('Sampling %s documents per graph category for ablation study', config.ablation.num_samples)
+    df = sample_documents(config, model.test_df, config.ablation.num_samples)
     ablation_df = ablation_study(model, config, df)
     logger.info(ablation_df.groupby('ablation_category').mean())
 
     logger.info('Test Set ablation study (Unique Words)')
-    logger.info('Sampling %s documents per graph category for ablation study', num_samples)
-    df = sample_documents(config, model.train_df, num_samples)
+    logger.info('Sampling %s documents per graph category for ablation study', config.ablation.num_samples)
+    df = sample_documents(config, model.train_df, config.ablation.num_samples)
     ablation_df = ablation_study(model, config, df, unique_tokens=True)
 
     logger.info(ablation_df.groupby('ablation_category').mean())
