@@ -12,9 +12,7 @@ from sklearn.preprocessing import LabelBinarizer
 
 from experiments.classification.util.classifier import Classifier
 from experiments.classification.util.util import embed
-from experiments.util.env import use_gpu
 from experiments.util.training import train_model
-from faceted_domain_encoder import FacetedDomainEncoder
 
 logger = logging.getLogger(__name__)
 
