@@ -10,7 +10,7 @@ defaults:
 model:
   vocabulary_path: 'vocabulary.json'
   encoder_layers: 1
-  dropout: 0.2
+  dropout: 0.3
   is_bidirectional: True
   word_embedding_dims: 300
   graph_embedding_dims: 100
@@ -20,18 +20,18 @@ model:
 training:
   learning_rate: 0.001
   batch_size: 32
-  samples_per_document: 16
+  samples_per_document: 8
   sampling: error_weighted
-  k_embedding: 8
+  k_embedding: 32
   k_graph: 32
   num_workers: 4
 
 validation:
   batch_size: 32
   samples_per_document: 8
-  sampling: uniform
-  k_embedding: 0
-  k_graph: 16
+  sampling: error_weighted
+  k_embedding: 32
+  k_graph: 32
   num_workers: 4
 
 trainer:

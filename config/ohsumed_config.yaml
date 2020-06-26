@@ -10,7 +10,7 @@ defaults:
 model:
   vocabulary_path: 'vocabulary.json'
   encoder_layers: 1
-  dropout: 0.2
+  dropout: 0.3
   is_bidirectional: True
   word_embedding_dims: 300
   graph_embedding_dims: 100
