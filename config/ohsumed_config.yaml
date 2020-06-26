@@ -1,7 +1,7 @@
 defaults:
   - dataset: ohsumed_classification
   - encoder: gru
-  - normalizer: corpus
+  - normalizer: pass
   - pooling: category_attention
   - word: fasttext
   - graph: mesh
@@ -29,12 +29,14 @@ training:
 validation:
   batch_size: 32
   samples_per_document: 8
-  sampling: uniform
+  sampling: error_weighted
   k_embedding: 0
   k_graph: 16
   num_workers: 4
 
 trainer:
   gpus: 1
+  patience: 1
   max_epochs: 20
   export_embeddings: False
+

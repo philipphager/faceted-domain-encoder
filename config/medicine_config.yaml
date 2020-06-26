@@ -36,5 +36,7 @@ validation:
 
 trainer:
   gpus: 1
+  patience: 1
   max_epochs: 20
   export_embeddings: False
+
