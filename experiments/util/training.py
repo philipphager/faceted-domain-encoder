@@ -1,3 +1,4 @@
+import logging
 import os
 
 from pytorch_lightning import Trainer, seed_everything
@@ -5,6 +6,8 @@ from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 
 from experiments.util.env import use_gpu
 from faceted_domain_encoder import FacetedDomainEncoder
+
+logger = logging.getLogger(__name__)
 
 
 def clear_checkpoint_dir(path):
@@ -16,20 +19,26 @@ def clear_checkpoint_dir(path):
                 os.remove(os.path.join(path, f))
 
 
-def get_model_path(path):
+def get_last_checkpoint(path):
     files = os.listdir(path)
-    file = [f for f in files if f.endswith('.ckpt')][0]
+    files = [f for f in files if f.endswith('.ckpt')]
+    file = files[0]
+
+    if len(files) > 0:
+        logger.warning('Expected a single model in checkpoint directory! Parallel executions?')
+
+    logger.info('Loading best model: %s', file)
     return os.path.join(path, file)
 
 
-def train_model(config):
-    use_gpu(3)
+def train_model(config, gpu=3):
+    use_gpu(gpu)
 
     # Ensure reproducibility
     seed_everything(42)
+
     checkpoint_dir = os.path.join(os.getcwd(), 'model')
     clear_checkpoint_dir(checkpoint_dir)
-
     checkpoint = ModelCheckpoint(filepath=checkpoint_dir)
     early_stopping = EarlyStopping(patience=config.trainer.patience)
 
@@ -46,7 +55,7 @@ def train_model(config):
     trainer.fit(model)
 
     # Load best model
-    path = get_model_path(checkpoint_dir)
+    path = get_last_checkpoint(checkpoint_dir)
     model = FacetedDomainEncoder.load_from_checkpoint(path)
 
     model.cpu()
