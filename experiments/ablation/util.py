@@ -10,7 +10,9 @@ def sample_documents(config, frame, num_samples):
     sample_dfs = []
 
     for i in range(len(config.graph.categories)):
-        sample_df = frame[frame.document_category.map(lambda x: i in x)].sample(num_samples)
+        sample_df = frame[frame.document_category.map(lambda x: i in x)]
+        logger.info('Documents in category: %s', sample_df)
+        sample_df = sample_df.sample(num_samples)
         sample_df['ablation_category'] = config.graph.categories[i]
         sample_dfs.append(sample_df)
 
