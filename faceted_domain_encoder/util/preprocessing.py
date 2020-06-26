@@ -160,7 +160,7 @@ class Vocabulary:
         self._freeze = False
 
     def __call__(self, sentence_tokens, sentence_entities, sentence_categories):
-        assert len(sentence_tokens) <= self.max_length, f'Maximum sentence length is {self.max_length}, but got: {len(sentence_tokens)}'
+        #assert len(sentence_tokens) <= self.max_length, f'Maximum sentence length is {self.max_length}, but got: {len(sentence_tokens)}'
         sentence_length = min(len(sentence_tokens), self.max_length)
         embedding = torch.zeros(self.max_length).long()
         # Fill category vector with -1 for invalid category
