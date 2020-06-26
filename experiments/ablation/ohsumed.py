@@ -2,7 +2,7 @@ import logging
 
 import hydra
 
-from experiments.ablation.util import ablation_study, sample_documents
+from experiments.ablation.util.ablation_study import ablation_study, sample_documents
 from experiments.classification.util.data import OhsumedDataset
 from experiments.util.training import train_model
 
@@ -42,7 +42,7 @@ def experiment(config):
 
     logger.info('Test Set ablation study (Unique Words)')
     logger.info('Sampling %s documents per graph category for ablation study', config.ablation.num_samples)
-    df = sample_documents(config, model.train_df, config.ablation.num_samples)
+    df = sample_documents(config, model.test_df, config.ablation.num_samples)
     ablation_df = ablation_study(model, config, df, unique_tokens=True)
 
     logger.info(ablation_df.groupby('ablation_category').mean())
@@ -51,6 +51,7 @@ def experiment(config):
     logger.info('Mean tokens in category:', ablation_df.groupby('ablation_category').mean())
     logger.info('Median tokens in category:', ablation_df.groupby('ablation_category').median())
     logger.info('Max tokens in category:', ablation_df.groupby('ablation_category').max())
+    logger.info('Documents in category:', ablation_df.groupby('ablation_category').size())
 
 
 if __name__ == '__main__':

@@ -1,0 +1,12 @@
+data:
+  name: aviation_email_classification
+  raw_path: 'data/experiment/ablation/aviation/email/corpus.pkl'
+  train_path: 'data/experiment/ablation/aviation/email/train.txt'
+  test_path: 'data/experiment/ablation/aviation/email/test.txt'
+  should_stop: True
+  should_sample: False
+  samples: 0
+  max_length: 300
+  split: 0.3
+  shuffle_before_split: True
+  random_state: 42

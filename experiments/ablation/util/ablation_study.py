@@ -11,8 +11,10 @@ def sample_documents(config, frame, num_samples):
 
     for i in range(len(config.graph.categories)):
         sample_df = frame[frame.document_category.map(lambda x: i in x)]
-        logger.info('Documents in category: %s', sample_df)
-        sample_df = sample_df.sample(num_samples)
+        max_num_samples = len(sample_df)
+        samples = min(num_samples, max_num_samples)
+        logger.info('Sampling n documents in category: %s / %s', samples, max_num_samples)
+        sample_df = sample_df.sample(samples, random_state=config.data.random_state)
         sample_df['ablation_category'] = config.graph.categories[i]
         sample_dfs.append(sample_df)
 
@@ -43,7 +45,7 @@ def get_document_ablations(index, category, length, unique_tokens=False, padding
 
     ablation_index = ablation_index.fill_diagonal_(padding)
     ablation_category = ablation_category.fill_diagonal_(invalid_category)
-    ablation_length = ablation_length - 1
+    ablation_length = (ablation_length - 1).clamp(1)
     return (ablation_index, ablation_category, ablation_length), index, category, length
 
 
@@ -83,7 +85,7 @@ def ablation_study(model, config, frame, unique_tokens=False):
             distance_index = index[sort_by_distance]
             distance_category = category[sort_by_distance]
             distance_mean_average_precision = get_mean_average_precision(distance_category, ablation_category_id)
-            result['distance_map'] = attention_mean_average_precision.item()
+            result['distance_map'] = distance_mean_average_precision.item()
             result['distance_tokens'] = get_tokens(model, distance_index)
             result['distance_categories'] = get_category_names(config, distance_category)
 
@@ -94,7 +96,7 @@ def ablation_study(model, config, frame, unique_tokens=False):
             attention_index = index[sort_by_attention]
             attention_category = category[sort_by_attention]
             attention_mean_average_precision = get_mean_average_precision(attention_category, ablation_category_id)
-            result['attention_map'] = distance_mean_average_precision.item()
+            result['attention_map'] = attention_mean_average_precision.item()
             result['attention_tokens'] = get_tokens(model, attention_index)
             result['attention_categories'] = get_category_names(config, attention_category)
 
