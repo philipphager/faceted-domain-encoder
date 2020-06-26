@@ -53,10 +53,17 @@ def train_model(config, gpu=3):
     # Train model
     model = FacetedDomainEncoder(config)
     trainer.fit(model)
+    train_df = model.train_df
+    validation_df = model.validation_df
+    test_df = model.test_df
 
     # Load best model
     path = get_last_checkpoint(checkpoint_dir)
     model = FacetedDomainEncoder.load_from_checkpoint(path)
+    # Keep preprocessed documents from original model
+    model.train_df = train_df
+    model.validation_df = validation_df
+    model.test_df = test_df
 
     model.cpu()
     return model
