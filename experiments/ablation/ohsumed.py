@@ -46,7 +46,13 @@ def experiment(config):
     logger.info('Sampling %s documents per graph category for ablation study', num_samples)
     df = sample_documents(config, model.train_df, num_samples)
     ablation_df = ablation_study(model, config, df, unique_tokens=True)
+
     logger.info(ablation_df.groupby('ablation_category').mean())
+    logger.info('Mean Average Precision', ablation_df['ablation_category'].mean())
+    logger.info('Median Mean Average Precision', ablation_df['ablation_category'].median())
+    logger.info('Mean tokens in category:', ablation_df.groupby('ablation_category').mean())
+    logger.info('Median tokens in category:', ablation_df.groupby('ablation_category').median())
+    logger.info('Max tokens in category:', ablation_df.groupby('ablation_category').max())
 
 
 if __name__ == '__main__':

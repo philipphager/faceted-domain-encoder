@@ -83,18 +83,20 @@ def ablation_study(model, config, frame, unique_tokens=False):
         attention_category = category[sort_by_attention]
         attention_mean_average_precision = get_mean_average_precision(attention_category, ablation_category_id)
 
-        logger.info('Ablation: %s, %s, %s', document_id, distance_mean_average_precision, attention_mean_average_precision)
+        # Meta data
+        num_tokens_in_category = category[category == ablation_category_id].size()
 
         results.append({
             'ablation_category_id': ablation_category_id,
             'ablation_category': ablation_category,
             'document_id': document_id,
+            'num_tokens_in_category': num_tokens_in_category,
             'distance_map': attention_mean_average_precision.item(),
             'attention_map': distance_mean_average_precision.item(),
             'distance_tokens': get_tokens(model, distance_index),
             'distance_categories': get_category_names(config, distance_category),
             'attention_tokens': get_tokens(model, attention_index),
-            'attention_categories': get_category_names(config, attention_category),
+            'attention_categories': get_category_names(config, attention_category)
         })
 
     return pd.DataFrame(results)
