@@ -1,7 +1,7 @@
 defaults:
   - dataset: medsts
   - encoder: gru
-  - normalizer: corpus
+  - normalizer: pass
   - pooling: category_attention
   - word: fasttext
   - graph: mesh
