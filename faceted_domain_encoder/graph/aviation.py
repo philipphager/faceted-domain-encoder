@@ -15,7 +15,6 @@ CATEGORIES = [
     'Manufacturer [H]',
     'Material [I]',
     'Person [J]',
-    'Process [K]',
     'Unit [L]',
 ]
 

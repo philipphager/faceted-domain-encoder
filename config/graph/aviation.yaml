@@ -3,7 +3,7 @@ graph:
     path: 'data/graph/aviation/graph.json'
     embedding: 'data/graph/aviation/embedding.json'
     raw_path: 'data/graph/aviation/preprocessing.json'
-    num_categories: 12
+    num_categories: 11
     categories:
         - 'Airport [A]'
         - 'Airline [B]'
@@ -15,5 +15,4 @@ graph:
         - 'Manufacturer [H]'
         - 'Material [I]'
         - 'Person [J]'
-        - 'Process [K]'
         - 'Unit [L]'
