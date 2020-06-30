@@ -2,6 +2,8 @@ import re
 
 import pandas as pd
 from cleantext import clean
+from sklearn.model_selection import train_test_split
+
 from experiments.ablation.util.mail import EmailReplyParser
 
 GERMAN_PHONE = re.compile('(\(?([\d \-\)\–\+\/\(]+)\)?([ .\-–\/]?)([\d]+))')
@@ -104,3 +106,44 @@ class EmailDataset:
         frame = frame.groupby('text').head(1)
         frame = frame.reset_index()
         return frame
+
+
+class CaseDataset:
+    def __init__(self,
+                 in_path,
+                 out_train_path,
+                 out_test_path,
+                 split=0.5):
+        self.in_path = in_path
+        self.out_train_path = out_train_path
+        self.out_test_path = out_test_path
+        self.split = split
+
+    def load(self):
+        df = pd.read_pickle(self.in_path)
+        df['text'] = df.summary + ' ' + df.description
+        df['text'] = df['text'].map(self._clean)
+        documents = df.text.drop_duplicates()
+
+        # Keep threads together during split
+        train, test = train_test_split(documents, test_size=self.split, random_state=42)
+        train.to_csv(self.out_train_path, index=False, header=False)
+        test.to_csv(self.out_test_path, index=False, header=False)
+        return train, test
+
+    def _clean(self, text):
+        text = clean(text,
+                     no_line_breaks=True,
+                     no_urls=True,
+                     no_emails=True,
+                     no_phone_numbers=True,
+                     replace_with_url='',
+                     replace_with_email='',
+                     replace_with_phone_number='')
+        text = GERMAN_PHONE.sub('', text)
+        text = IMAGE_ATTACHMENT.sub('', text)
+        text = MAIL.sub('', text)
+        text = MAILTO.sub('', text)
+        text = text.translate(str.maketrans(PUNCTUATION, ' ' * len(PUNCTUATION)))
+        text = SPACE.sub(' ', text)
+        return text
