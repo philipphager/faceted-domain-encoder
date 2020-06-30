@@ -1,0 +1,47 @@
+defaults:
+  - dataset: aviation_case_ablation
+  - encoder: gru
+  - normalizer: corpus
+  - pooling: category_attention
+  - word: fasttext
+  - graph: aviation
+  - hydra: default
+
+model:
+  vocabulary_path: 'vocabulary.json'
+  encoder_layers: 1
+  dropout: 0.3
+  is_bidirectional: True
+  word_embedding_dims: 300
+  graph_embedding_dims: 100
+  document_embedding_dims: 352
+  min_category_dimensions: 32
+
+training:
+  learning_rate: 0.001
+  batch_size: 32
+  samples_per_document: 4
+  sampling: error_weighted
+  k_embedding: 32
+  k_graph: 32
+  num_workers: 4
+
+validation:
+  batch_size: 32
+  samples_per_document: 4
+  sampling: error_weighted
+  k_embedding: 32
+  k_graph: 32
+  num_workers: 4
+
+trainer:
+  gpu: 3
+  patience: 1
+  max_epochs: 20
+  export_embeddings: False
+
+ablation:
+  num_samples: 100
+  attention_map: True
+  distance_map: True
+

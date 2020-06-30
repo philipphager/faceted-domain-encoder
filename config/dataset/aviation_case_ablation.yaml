@@ -1,0 +1,12 @@
+data:
+  name: aviation_case_ablation
+  raw_path: 'data/experiment/ablation/aviation/case/cases.pkl'
+  train_path: 'data/experiment/ablation/aviation/case/train.txt'
+  test_path: 'data/experiment/ablation/aviation/case/test.txt'
+  should_stop: True
+  should_sample: False
+  samples: 0
+  max_length: 270
+  split: 0.3
+  shuffle_before_split: True
+  random_state: 42
