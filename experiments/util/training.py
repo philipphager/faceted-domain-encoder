@@ -38,8 +38,8 @@ def clear_vocabulary(config):
         os.remove(path)
 
 
-def train_model(config, gpu=3):
-    use_gpu(gpu)
+def train_model(config):
+    use_gpu(config.trainer.gpu)
 
     # Ensure reproducibility
     seed_everything(42)
@@ -51,7 +51,7 @@ def train_model(config, gpu=3):
     early_stopping = EarlyStopping(patience=config.trainer.patience)
 
     trainer = Trainer(
-        gpus=config.trainer.gpus,
+        gpus=1,
         max_epochs=config.trainer.max_epochs,
         early_stop_callback=early_stopping,
         checkpoint_callback=checkpoint,
