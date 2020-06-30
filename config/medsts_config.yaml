@@ -35,7 +35,7 @@ validation:
   num_workers: 4
 
 trainer:
-  gpus: 1
+  gpu: 3
   patience: 1
   max_epochs: 20
   export_embeddings: False
