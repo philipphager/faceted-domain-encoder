@@ -31,6 +31,13 @@ def get_last_checkpoint(path):
     return os.path.join(path, file)
 
 
+def clear_vocabulary(config):
+    path = os.path.join(os.getcwd(), config.model.vocabulary_path)
+
+    if os.path.exists(path):
+        os.remove(path)
+
+
 def train_model(config, gpu=3):
     use_gpu(gpu)
 
@@ -39,6 +46,7 @@ def train_model(config, gpu=3):
 
     checkpoint_dir = os.path.join(os.getcwd(), 'model')
     clear_checkpoint_dir(checkpoint_dir)
+    clear_vocabulary(config)
     checkpoint = ModelCheckpoint(filepath=checkpoint_dir)
     early_stopping = EarlyStopping(patience=config.trainer.patience)
 
