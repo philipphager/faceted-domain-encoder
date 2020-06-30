@@ -53,7 +53,7 @@ def load_embeddings(vocabulary, word_embedding_path, graph_embedding_path, paddi
 
 
 class Tokenizer:
-    def __init__(self, stop=True, min_length=0):
+    def __init__(self, stop=True, min_length=2):
         self.nlp = spacy.load('en')
         self.nlp.tokenizer.infix_finditer = self._get_infix_regex()
         self.stop = stop
@@ -131,7 +131,6 @@ class EntityLinker:
                     token = ngram
                     next_start_token = end_token
                     entity = self.graph.term2node[ngram]
-                    # FIXME: Only first category is recognized
                     entity_categories = self.graph.find_categories(entity)
 
                     if len(entity_categories) > 0:
