@@ -226,6 +226,20 @@ version = "3.0.4"
 
 [[package]]
 category = "main"
+description = "Clean Your Text to Create Normalized Text Representations"
+name = "clean-text"
+optional = false
+python-versions = "*"
+version = "0.1.1"
+
+[package.dependencies]
+ftfy = "*"
+
+[package.extras]
+gpl = ["unidecode"]
+
+[[package]]
+category = "main"
 description = "Composable command line interface toolkit"
 name = "click"
 optional = false
@@ -409,6 +423,17 @@ name = "fsspec"
 optional = false
 python-versions = ">3.5"
 version = "0.7.4"
+
+[[package]]
+category = "main"
+description = "Fixes some problems with Unicode text after the fact"
+name = "ftfy"
+optional = false
+python-versions = ">=3.4"
+version = "5.7"
+
+[package.dependencies]
+wcwidth = "*"
 
 [[package]]
 category = "main"
@@ -1769,7 +1794,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "b37b5c1aeb40d3d483cbc2391ce0e50ede37733dccc4ea22b8c1f0b31406d72e"
+content-hash = "42e9f1a39631651eaacda3c9db636f174c69e7debc489c4a617687acf1d12a59"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1860,6 +1885,10 @@ certifi = [
 chardet = [
     {file = "chardet-3.0.4-py2.py3-none-any.whl", hash = "sha256:fc323ffcaeaed0e0a02bf4d117757b98aed530d9ed4531e3e15460124c106691"},
     {file = "chardet-3.0.4.tar.gz", hash = "sha256:84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae"},
+]
+clean-text = [
+    {file = "clean-text-0.1.1.tar.gz", hash = "sha256:dcd547366a35c27b49897793ec6b0ef4f0dcfa772c5b1f2343ee81b7fe2378b3"},
+    {file = "clean_text-0.1.1-py3-none-any.whl", hash = "sha256:c90bcd27aefbaf9656c9ebcc18c60deaa01ee1dedea0f6b9474c9de4b19ed83d"},
 ]
 click = [
     {file = "click-7.1.2-py2.py3-none-any.whl", hash = "sha256:dacca89f4bfadd5de3d7489b7c8a566eee0d3676333fbb50030263894c38c0dc"},
@@ -1956,6 +1985,9 @@ fasttext = [
 fsspec = [
     {file = "fsspec-0.7.4-py3-none-any.whl", hash = "sha256:1f9391c9b6e92a89949f0b0f7154b8b62a01f00b9c2767797d94ffa376dae9ab"},
     {file = "fsspec-0.7.4.tar.gz", hash = "sha256:7075fde6d617cd3a97eac633d230d868121a188a46d16a0dcb484eea0cf2b955"},
+]
+ftfy = [
+    {file = "ftfy-5.7.tar.gz", hash = "sha256:67f9c8b33a4b742376a3eda11b0e3bd5c0cbe719d95ea0bfd3736a7bdd1c24c8"},
 ]
 future = [
     {file = "future-0.18.2.tar.gz", hash = "sha256:b1bead90b70cf6ec3f0710ae53a525360fa360d306a86583adc6bf83a4db537d"},

@@ -1,8 +1,15 @@
 import re
 
 import pandas as pd
-
+from cleantext import clean
 from experiments.ablation.util.mail import EmailReplyParser
+
+GERMAN_PHONE = re.compile('(\(?([\d \-\)\–\+\/\(]+)\)?([ .\-–\/]?)([\d]+))')
+IMAGE_ATTACHMENT = re.compile('[a-zA-Z]*image[a-zA-Z]*')
+MAILTO = re.compile('[a-zA-Z]*<mailto:>[a-zA-Z]*')
+MAIL = re.compile('[a-zA-Z]*@[a-zA-Z]*\.[a-zA-Z]*')
+SPACE = re.compile('\s+')
+PUNCTUATION = '!"$%&\'()*+,.:;<=>?@[\\]^_`{|}~'
 
 
 class EmailDataset:
@@ -28,6 +35,12 @@ class EmailDataset:
         df['messages'] = df.plain_text_body.map(self._split_thread)
         df = self._unpack_messages(df)
 
+        df['length'] = df.text.map(len)
+        min_document_length = df.text.map(len).quantile(0.1)
+
+        df = df[df.text.map(len) > min_document_length]
+        df = df.drop_duplicates()
+
         # Keep threads together during split
         train_df = df.head(int(len(df) * self.split))
         test_df = df.tail(int(len(df) * self.split) + 1)
@@ -43,48 +56,41 @@ class EmailDataset:
         for fragment in message.fragments:
             if not fragment.headers:
                 content = fragment._content
-                content = ' '.join([line for line in content.split('\n') if not self._drop_line(line)])
-                content = content.replace('\r', ' ').replace('\n', '').replace('\t', ' ')
-                content = re.sub('\s+', ' ', content)
-                content = content.split('Regards')[0].split('regards')[0]
+                content = self._clean(content)
 
-                if len(content) > 0 and not content.isspace() and not self._drop_message(content):
+                if not content.isspace() and not self._drop_message(content):
                     messages.append(content)
 
         return messages
 
-    def _strip(self, text):
-        text = str(text.decode('UTF-8'))
-        return text.replace('\n', ' ').replace('\t', ' ').replace('\r', ' ')
-
-    def _drop_line(self, line):
-        # List of lines that can be removed that we identified manually, might be incomplete
-        prefixes = [
-            'Cc:',
-            'This e-mail (including attachments) contains contents owned by Rolls-Royce',
-            'This e-mail and any files',
-            'Neither the company nor any subsidiar',
-            'The recipient should check this email',
-            'The data contained in, or attached to, this e-mail',
-            '____',
-            '----'
-        ]
-
-        return any([line.strip().startswith(p) for p in prefixes])
+    def _clean(self, text):
+        text = clean(text,
+                     no_line_breaks=True,
+                     no_urls=True,
+                     no_emails=True,
+                     no_phone_numbers=True,
+                     replace_with_url='',
+                     replace_with_email='',
+                     replace_with_phone_number='')
+        text = GERMAN_PHONE.sub('', text)
+        text = IMAGE_ATTACHMENT.sub('', text)
+        text = MAIL.sub('', text)
+        text = MAILTO.sub('', text)
+        text = text.translate(str.maketrans(PUNCTUATION, ' ' * len(PUNCTUATION)))
+        text = SPACE.sub(' ', text)
+        return text
 
     def _drop_message(self, text):
-        # List of auto.reply fragments that we identified manually, might be incomplete
         messages = [
-            'Auto forwarded by a Rule',
-            '** Security Notice',
-            '(c) 2012 Rolls-Royce plc Registered office',
-            'An e-mail response to this address may be subject to interception or monitoring',
-            'This e-mail and any attachments may contain confidential or privileged information',
-            'Confidential Communication',
+            'cc',
+            'auto forwarded',
+            'security notice',
+            '(c) 2012 rolls-royce plc registered office',
+            'subject to interception or monitoring',
             'confidential',
         ]
 
-        return any([m in text for m in messages])
+        return any([m in text.lower() for m in messages])
 
     def _unpack_messages(self, frame):
         topics = []
