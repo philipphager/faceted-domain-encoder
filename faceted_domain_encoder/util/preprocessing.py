@@ -53,7 +53,7 @@ def load_embeddings(vocabulary, word_embedding_path, graph_embedding_path, paddi
 
 
 class Tokenizer:
-    def __init__(self, stop=True, min_length=2):
+    def __init__(self, stop=True, min_length=0):
         self.nlp = spacy.load('en')
         self.nlp.tokenizer.infix_finditer = self._get_infix_regex()
         self.stop = stop
