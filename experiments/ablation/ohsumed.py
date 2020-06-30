@@ -34,24 +34,26 @@ def experiment(config):
     prepare_datasets(config)
     model = train_model(config)
 
-    logger.info('Test Set ablation study')
+    logger.info('Test set ablation study')
     logger.info('Sampling %s documents per graph category for ablation study', config.ablation.num_samples)
     df = sample_documents(config, model.test_df, config.ablation.num_samples)
     ablation_df = ablation_study(model, config, df)
-    logger.info(ablation_df.groupby('ablation_category').mean())
+    ablation_df.to_csv('ablation.csv')
+    logger.info(ablation_df.groupby('ablation_category').mean().to_string())
 
-    logger.info('Test Set ablation study (Unique Words)')
+    logger.info('Test set ablation study (Unique Words)')
     logger.info('Sampling %s documents per graph category for ablation study', config.ablation.num_samples)
     df = sample_documents(config, model.test_df, config.ablation.num_samples)
     ablation_df = ablation_study(model, config, df, unique_tokens=True)
+    ablation_df.to_csv('ablation_unique.csv')
+    logger.info(ablation_df.groupby('ablation_category').mean().to_string())
 
-    logger.info(ablation_df.groupby('ablation_category').mean())
-    logger.info('Mean Average Precision', ablation_df['ablation_category'].mean())
-    logger.info('Median Mean Average Precision', ablation_df['ablation_category'].median())
-    logger.info('Mean tokens in category:', ablation_df.groupby('ablation_category').mean())
-    logger.info('Median tokens in category:', ablation_df.groupby('ablation_category').median())
-    logger.info('Max tokens in category:', ablation_df.groupby('ablation_category').max())
-    logger.info('Documents in category:', ablation_df.groupby('ablation_category').size())
+    if config.ablation.distance_map:
+        logger.info('Distance: Mean Average Precision: %s', ablation_df['distance_map'].mean())
+        logger.info('Distance: Median Mean Average Precision: %s', ablation_df['distance_map'].median())
+    if config.ablation.attention_map:
+        logger.info('Attention: Mean Average Precision: %s', ablation_df['attention_map'].median())
+        logger.info('Attention: Median Mean Average Precision: %s', ablation_df['attention_map'].median())
 
 
 if __name__ == '__main__':
