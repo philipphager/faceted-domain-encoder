@@ -21,27 +21,23 @@
     ```
   
 ## Experiments
-### Sentence Similarity Tasks
-#### MedSTS
-```
-python experiments/sentence_similarity/medsts.py
-```
-#### BIOSSES
-```
-python experiments/sentence_similarity/medsts.py
-```
-### Text Classification
-#### OHSUMED
-```
-python experiments/classification/ohsumed.py
+### Semantic Similarity Tasks MedSTS & BIOSSES
+```bash
+chmod +x ./evaluate_semantic_similarity.sh
+./evaluate_semantic_similarity.sh
 ```
 
-#### Cancer Hallmarks
-```
-python experiments/classification/hallmarks.py
+### Word Importance per Category
+Word importance per category on the Rolls-Royce Email and Case dataset.
+#### Aviation
+```bash
+chmod +x ./evaluate_aviation_ablation.sh
+./evaluate_aviation_ablation.sh
 ```
 
-### Grep Outputs from Logs
-```
- find outputs/ -type f | xargs grep -n 'MedSTS Test'
+#### Medical
+Word importance per category on the OHSUMED dataset. 
+```bash
+chmod +x ./evaluate_medical_ablation.sh
+./evaluate_medical_ablation.sh
 ```
