@@ -1,7 +1,7 @@
 defaults:
   - dataset: aviation_email_ablation
   - encoder: gru
-  - normalizer: corpus
+  - normalizer: pass
   - pooling: category_attention
   - word: fasttext
   - graph: aviation
@@ -44,4 +44,3 @@ ablation:
   num_samples: 100
   attention_map: True
   distance_map: True
-

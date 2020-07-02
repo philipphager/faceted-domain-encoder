@@ -85,9 +85,14 @@ def ablation_study(model, config, frame, unique_tokens=False):
             distance_index = index[sort_by_distance]
             distance_category = category[sort_by_distance]
             distance_mean_average_precision = get_mean_average_precision(distance_category, ablation_category_id)
+            random_indices = torch.randperm(distance_category.nelement())
+            random_mean_average_precision = get_mean_average_precision(distance_category[random_indices],
+                                                                       ablation_category_id)
+
             result['distance_map'] = distance_mean_average_precision.item()
             result['distance_tokens'] = get_tokens(model, distance_index)
             result['distance_categories'] = get_category_names(config, distance_category)
+            result['random_map'] = random_mean_average_precision.mean().item()
 
         if config.ablation.attention_map:
             # Select most relevant words by attention weight

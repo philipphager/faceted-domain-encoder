@@ -8,7 +8,7 @@ python experiments/ablation/ohsumed.py -m \
     trainer.gpu=2
 
 python experiments/ablation/ohsumed.py -m \
-    encoder=gru \
-    pooling=self_attention,mean,max \
+    encoder=lstm \
+    pooling=self_attention \
     ablation.attention_map=False \
     trainer.gpu=2

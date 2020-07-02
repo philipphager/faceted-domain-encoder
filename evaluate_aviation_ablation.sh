@@ -8,8 +8,8 @@ python experiments/ablation/aviation_case.py -m \
     trainer.gpu=3
 
 python experiments/ablation/aviation_case.py -m \
-    encoder=gru \
-    pooling=self_attention,mean,max \
+    encoder=lstm \
+    pooling=self_attention \
     ablation.attention_map=False \
     trainer.gpu=3
 
@@ -20,7 +20,7 @@ python experiments/ablation/aviation_email.py -m \
     trainer.gpu=3
 
 python experiments/ablation/aviation_email.py -m \
-    encoder=gru \
-    pooling=self_attention,mean,max \
+    encoder=lstm \
+    pooling=self_attention \
     ablation.attention_map=False \
     trainer.gpu=3
