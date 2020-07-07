@@ -1,6 +1,6 @@
 defaults:
   - dataset: biosses
-  - encoder: gru
+  - encoder: lstm
   - normalizer: corpus
   - pooling: category_attention
   - word: fasttext

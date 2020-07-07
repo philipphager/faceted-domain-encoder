@@ -1,6 +1,6 @@
 defaults:
   - dataset: ohsumed_classification
-  - encoder: gru
+  - encoder: lstm
   - normalizer: pass
   - pooling: category_attention
   - word: fasttext
@@ -22,7 +22,7 @@ training:
   batch_size: 32
   samples_per_document: 8
   sampling: error_weighted
-  k_embedding: 8
+  k_embedding: 32
   k_graph: 32
   num_workers: 4
 
@@ -30,8 +30,8 @@ validation:
   batch_size: 32
   samples_per_document: 8
   sampling: error_weighted
-  k_embedding: 0
-  k_graph: 16
+  k_embedding: 32
+  k_graph: 32
   num_workers: 4
 
 trainer:

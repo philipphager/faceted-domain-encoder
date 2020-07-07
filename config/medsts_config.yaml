@@ -1,6 +1,6 @@
 defaults:
   - dataset: medsts
-  - encoder: gru
+  - encoder: lstm
   - normalizer: pass
   - pooling: category_attention
   - word: fasttext

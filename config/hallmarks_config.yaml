@@ -1,6 +1,6 @@
 defaults:
   - dataset: hallmarks_classification
-  - encoder: gru
+  - encoder: lstm
   - normalizer: corpus
   - pooling: category_attention
   - word: fasttext

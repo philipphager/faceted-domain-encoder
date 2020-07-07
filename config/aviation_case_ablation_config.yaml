@@ -1,6 +1,6 @@
 defaults:
   - dataset: aviation_case_ablation
-  - encoder: gru
+  - encoder: lstm
   - normalizer: pass
   - pooling: category_attention
   - word: fasttext
@@ -44,4 +44,5 @@ ablation:
   num_samples: 100
   attention_map: True
   distance_map: True
-
+  file: 'ablation.csv'
+  file_unique: 'ablation_unique.csv'
