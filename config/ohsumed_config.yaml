@@ -20,7 +20,7 @@ model:
 training:
   learning_rate: 0.001
   batch_size: 32
-  samples_per_document: 8
+  samples_per_document: 4
   sampling: error_weighted
   k_embedding: 32
   k_graph: 32
@@ -28,7 +28,7 @@ training:
 
 validation:
   batch_size: 32
-  samples_per_document: 8
+  samples_per_document: 4
   sampling: error_weighted
   k_embedding: 32
   k_graph: 32
