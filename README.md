@@ -6,6 +6,13 @@
 4. Activate virtual environment: `poetry shell`
 5. Download [spaCy](https://www.spacy.io) model: `python -m spacy download en`
 
+## Run demo
+1. Install poetry as dependency manager: `pip install --user poetry`
+2. Navigate to project directory: `cd faceted-domain-encoder`
+3. Install project dependencies: `poetry install`
+4. Activate virtual environment: `poetry shell`
+5. Start streamlit server: `streamlit run demo/index.py`
+
 ## Run experiments
 1. Activate virtual environment: `poetry shell`
 2. Run experiment script from project directory, e.g.:
