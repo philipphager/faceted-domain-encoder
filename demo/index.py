@@ -3,12 +3,28 @@ import os
 import matplotlib
 import pandas as pd
 import streamlit as st
+import spacy
 import torch
 import torch.nn.functional as F
+import urllib
+
+from pathlib import Path
 
 from faceted_domain_encoder import FacetedDomainEncoder
 from faceted_domain_encoder.util.linalg import CategoryDistance
 from faceted_domain_encoder.util.plotting import CATEGORY_PALLETTE
+
+
+def init_spacy():
+    spacy.cli.download('en')
+
+
+def download_file(url, path):
+    path = Path(path)
+
+    if not path.exists():
+        st.info(f'Downloading: {path}')
+        urllib.request.urlretrieve(url, path)
 
 
 @st.cache(allow_output_mutation=True)
@@ -137,7 +153,17 @@ def format_option(x, n_words=5):
 
 
 st.markdown('# Faceted Domain Encoder - Explorer 🔍')
-st.markdown('*Philipp Hager, Julian Risch, Ralf Krestel, 2020.* Link to [paper](TODO)')
+st.markdown('*Julian Risch, Philipp Hager, Ralf Krestel, 2020.* Link to [paper](https://hpi.de/naumann/projects/web-science/deep-learning-for-text/multifaceted-embeddings.html)')
+
+init_spacy()
+download_file('https://www.dropbox.com/s/1ca4ckxlra0svqd/desc2020.xml?dl=1', 'data/graph/mesh/desc2020.xml')
+download_file('https://www.dropbox.com/s/daiphzudbo5z1vh/graph.json?dl=1', 'data/graph/mesh/graph.json')
+download_file('https://www.dropbox.com/s/sb7t2d1xxdr77hf/embedding.json?dl=1', 'data/graph/mesh/embedding.json')
+download_file('https://www.dropbox.com/s/84qgm7ltf4mmb8v/model.ckpt?dl=1', 'data/ohsumed/model.ckpt')
+download_file('https://www.dropbox.com/s/wnwr981hefu6pq3/test.txt?dl=1', 'data/ohsumed/test.txt')
+download_file('https://www.dropbox.com/s/ps4keez6gecl2qu/vocabulary.json?dl=1', 'vocabulary.json')
+
+
 model = load_model('./data/ohsumed')
 model.eval()
 categories = list(map(lambda x: x.split(' [')[0], model.hparams.graph.categories))
