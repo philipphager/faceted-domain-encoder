@@ -170,7 +170,7 @@ categories = list(map(lambda x: x.split(' [')[0], model.hparams.graph.categories
 category2index = {c: i for i, c in enumerate(categories)}
 index2category = {i: c for i, c in enumerate(categories)}
 
-df = load_documents('./data/ohsumed/test.txt').head(100)
+df = load_documents('./data/ohsumed/test.txt')
 embeddings = load_embeddings(df.text.values)
 
 document_id = st.selectbox('Select document', list(range(100)), format_func=format_option)
